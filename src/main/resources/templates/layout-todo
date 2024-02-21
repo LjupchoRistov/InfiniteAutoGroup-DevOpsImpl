@@ -1,0 +1,8 @@
+<!-- Add this html tag -->
+<html
+        xmlns:th="http://thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+
+<!-- Add this to the tag that will be the body -->
+layout:fragment="body"
