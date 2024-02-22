@@ -13,8 +13,5 @@ import java.util.List;
 public interface OfferRepository extends JpaRepository<Offer, Long> {
     Offer findByTitle(String title);
     List<Offer> findAllByModelEquals(CarModel model);
-    List<Offer> findAllByModelEquals(String model);
-    List<Offer> findAllByFuelEquals(Fuel fuel);
-
     List<Offer> findAllByStyleEquals(Style style);
 }
