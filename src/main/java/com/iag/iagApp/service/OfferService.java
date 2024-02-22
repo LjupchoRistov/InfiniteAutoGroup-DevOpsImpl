@@ -22,7 +22,7 @@ public interface OfferService {
 
     List<OfferDto> findAllWithSameMakeAndModel(OfferDto offerDto);
 
-    List<OfferDto> findAllWithSameFuelType(OfferDto offerDto);
+    List<OfferDto> findAllWithSameMake(OfferDto offerDto);
 
     List<OfferDto> findAllWithSameStyle(OfferDto offerDto);
 }

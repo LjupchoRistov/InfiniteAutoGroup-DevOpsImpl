@@ -32,19 +32,21 @@ public class OfferController {
     @GetMapping("/offers/{id}/details")
     public String offerDetails(@PathVariable Long id,
                                Model model) throws InvalidOfferIdException {
-        //todo: add the car of the offer
+        //todo: add the offer
         OfferDto offerDto = this.offerService.findById(id);
         model.addAttribute("offer", offerDto);
 
-        //todo: find cars with same make & model
-        List<OfferDto> similarCars = this.offerService.findAllWithSameMakeAndModel(offerDto);
-        model.addAttribute("similarCars", similarCars);
+        //todo: find offers with same make & model
+        List<OfferDto> sameMakeAndModelOffers = this.offerService.findAllWithSameMakeAndModel(offerDto);
+        model.addAttribute("sameMakeAndModelOffers", sameMakeAndModelOffers);
 
-        //todo: find cars with same fuel type
-        List<OfferDto> sameFuelTypeOffers = this.offerService.findAllWithSameFuelType(offerDto);
-        model.addAttribute("sameFuelTypeOffers", sameFuelTypeOffers);
+        //todo: find offers by the same make
+        List<OfferDto> sameMakeOffers = this.offerService.findAllWithSameMake(offerDto);
+        model.addAttribute("sameMakeOffers", sameMakeOffers);
 
-
+        //todo: find offers with the same car style
+        List<OfferDto> sameCarStyleOffers = this.offerService.findAllWithSameStyle(offerDto);
+        model.addAttribute("sameCarStyleOffers", sameCarStyleOffers);
 
         return "offers-details";
     }

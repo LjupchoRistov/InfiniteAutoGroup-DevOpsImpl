@@ -9,11 +9,14 @@ import com.iag.iagApp.model.Offer;
 import com.iag.iagApp.model.UserEntity;
 import com.iag.iagApp.model.enums.Fuel;
 import com.iag.iagApp.model.enums.Style;
+import com.iag.iagApp.repository.CarModelRepository;
 import com.iag.iagApp.repository.OfferRepository;
 import com.iag.iagApp.repository.UserRepository;
 import com.iag.iagApp.service.OfferService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,10 +32,12 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
     private final UserRepository userRepository;
+    private final CarModelRepository carModelRepository;
 
-    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository) {
+    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, CarModelRepository carModelRepository) {
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
+        this.carModelRepository = carModelRepository;
     }
 
     @Override
@@ -49,32 +54,48 @@ public class OfferServiceImpl implements OfferService {
     public List<OfferDto> findAllWithSameMakeAndModel(OfferDto offerDto) {
         CarModel carModel = mapToCarModel(offerDto.getModel());
 
-        List<Offer> offers = offerRepository.findAllByModelEquals(carModel);
-        offers.removeIf(offer -> offer.getId().equals(offerDto.getId()));
+        List<Offer> offerList = this.offerRepository.findAllByModelEquals(carModel);
 
-        return offers.stream()
-                .map(OfferMapper::mapToOfferDto)
-                .collect(Collectors.toList());
+        //todo: shuffle the list
+        Collections.shuffle(offerList);
+        //todo: remove the post from its own suggestions
+        offerList.removeIf(offer -> offer.getId().equals(offerDto.getId()));
+
+        return offerList.stream().map(OfferMapper::mapToOfferDto).limit(8).toList();
     }
 
     @Override
-    public List<OfferDto> findAllWithSameFuelType(OfferDto offerDto) {
-        Fuel fuel = offerDto.getFuel();
+    public List<OfferDto> findAllWithSameMake(OfferDto offerDto) {
+        CarModelDto carModelDto = offerDto.getModel();
+        String make = carModelDto.getMake();
 
-        List<Offer> offers = this.offerRepository.findAllByFuelEquals(fuel);
-        offers.removeIf(offer -> offer.getId().equals(offerDto.getId()));
+        //todo: get all CarModel that contain make
+        List<CarModel> carModelList = this.carModelRepository.findAllByMakeEquals(make);
 
-        return offers.stream().map(OfferMapper::mapToOfferDto).toList();
+        //todo: get all Offers that their CarModel is in the list
+        List<Offer> offerList = new ArrayList<>();
+        carModelList.forEach(carModel -> offerList.addAll(this.offerRepository.findAllByModelEquals(carModel)));
+
+        //todo: shuffle the list
+        Collections.shuffle(offerList);
+        //todo: remove the post from its own suggestions
+        offerList.removeIf(offer -> offer.getId().equals(offerDto.getId()));;
+
+        return offerList.stream().map(OfferMapper::mapToOfferDto).limit(8).toList();
     }
 
     @Override
     public List<OfferDto> findAllWithSameStyle(OfferDto offerDto) {
         Style style = offerDto.getStyle();
 
-        List<Offer> offers = this.offerRepository.findAllByStyleEquals(style);
-        offers.removeIf(offer -> offer.getId().equals(offerDto.getId()));
+        List<Offer> offerList = this.offerRepository.findAllByStyleEquals(style);
 
-        return offers.stream().map(OfferMapper::mapToOfferDto).toList();
+        //todo: shuffle the list
+        Collections.shuffle(offerList);
+        //todo: remove the post from its own suggestions
+        offerList.removeIf(offer -> offer.getId().equals(offerDto.getId()));
+
+        return offerList.stream().map(OfferMapper::mapToOfferDto).limit(8).toList();
     }
 
     @Override
