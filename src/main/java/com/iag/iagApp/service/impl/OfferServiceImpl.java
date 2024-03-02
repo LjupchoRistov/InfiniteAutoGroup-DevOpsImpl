@@ -7,25 +7,23 @@ import com.iag.iagApp.mapper.OfferMapper;
 import com.iag.iagApp.model.CarModel;
 import com.iag.iagApp.model.Offer;
 import com.iag.iagApp.model.UserEntity;
-import com.iag.iagApp.model.enums.Fuel;
 import com.iag.iagApp.model.enums.Style;
 import com.iag.iagApp.repository.CarModelRepository;
 import com.iag.iagApp.repository.OfferRepository;
 import com.iag.iagApp.repository.UserRepository;
+import com.iag.iagApp.service.CarModelService;
 import com.iag.iagApp.service.OfferService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 //todo: implement mappers
+import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModelDto;
 import static com.iag.iagApp.mapper.OfferMapper.mapToOffer;
 import static com.iag.iagApp.mapper.OfferMapper.mapToOfferDto;
 import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModel;
-import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModelDto;
 
 @Service
 public class OfferServiceImpl implements OfferService {
@@ -33,11 +31,13 @@ public class OfferServiceImpl implements OfferService {
     private final OfferRepository offerRepository;
     private final UserRepository userRepository;
     private final CarModelRepository carModelRepository;
+    private final CarModelService carModelService;
 
-    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, CarModelRepository carModelRepository) {
+    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, CarModelRepository carModelRepository, CarModelService carModelService) {
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
         this.carModelRepository = carModelRepository;
+        this.carModelService = carModelService;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<OfferDto> findAllWithSameMakeAndModel(OfferDto offerDto) {
-        CarModel carModel = mapToCarModel(offerDto.getModel());
+        CarModel carModel = this.carModelRepository.findByMakeEqualsAndModelEquals(offerDto.getMake(), offerDto.getModel());
 
         List<Offer> offerList = this.offerRepository.findAllByModelEquals(carModel);
 
@@ -66,7 +66,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<OfferDto> findAllWithSameMake(OfferDto offerDto) {
-        CarModelDto carModelDto = offerDto.getModel();
+        CarModelDto carModelDto = mapToCarModelDto(this.carModelRepository.findByMakeEqualsAndModelEquals(offerDto.getMake(), offerDto.getModel()));
         String make = carModelDto.getMake();
 
         //todo: get all CarModel that contain make
@@ -107,17 +107,17 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Offer saveOffer(OfferDto offerDto) {
 //        String username = SecurityUtil.getSessionUser();
-        String username = "test_user";
-        UserEntity user = userRepository.findByUsername(username);
-        Offer offer = mapToOffer(offerDto);
+        UserEntity user = userRepository.findAll().getFirst();
+        Offer offer = mapToOffer(offerDto, carModelService);
         offer.setCreatedBy(user);
+        offer.setCoverPicture(offerDto.getPictures().getFirst());
 
         return this.offerRepository.save(offer);
     }
 
     @Override
     public void updateOffer(OfferDto offerDto) {
-        Offer offer = mapToOffer(offerDto);
+        Offer offer = mapToOffer(offerDto, carModelService);
         this.offerRepository.save(offer);
     }
 

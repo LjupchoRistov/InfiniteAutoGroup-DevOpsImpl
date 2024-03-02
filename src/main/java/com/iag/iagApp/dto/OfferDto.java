@@ -9,6 +9,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,43 +20,59 @@ import java.util.List;
 @Builder
 public class OfferDto {
     private Long id;
-    //todo: attributes
-    @NotEmpty(message = "Title cannot be empty!")
+    // Attributes
+//    @NotEmpty(message = "Please enter title")
     private String title;
-    @NotEmpty(message = "Description cannot be empty!")
+//    @NotEmpty(message = "Please enter description!")
     private String description;
-    private String cover_picture;
-    @NotEmpty(message = "Price cannot be empty!")
+    // Must be empty
+    // First photo of the list is taken for cover photo
+    private String coverPicture;
+//    @NotEmpty(message = "Please enter price!")
     private Long price;
-    @NotEmpty(message = "Condition cannot be empty!")
+//    @NotEmpty(message = "Please enter trade!")
     private Condition condition;
-    @NotEmpty(message = "Please select yes/no!")
+//    @NotEmpty(message = "Please enter trade!")
     private Boolean trade;
-    @NotEmpty(message = "Style cannot be empty!")
+//    @NotEmpty(message = "Please enter style!")
     private Style style;
-    @NotEmpty(message = "Year make cannot be empty!")
+//    @NotEmpty(message = "Please enter year!")
     private Integer year;
-    @NotEmpty(message = "Fuel type cannot be empty!")
+//    @NotEmpty(message = "Please enter fuel!")
     private Fuel fuel;
-    @NotEmpty(message = "... cannot be empty!")
-    private Long distance_passed;
-    @NotEmpty(message = "Transmission type cannot be empty!")
+//    @NotEmpty(message = "Please enter distancePassed!")
+    private Integer distancePassed;
+//    @NotEmpty(message = "Please enter transmission!")
     private Transmission transmission;
-    @NotEmpty(message = "Engine power cannot be empty!")
-    private DriveTrain drive_train;
-    private Integer engine_power;
-    private Float engine_liters;
-    private Integer engine_cylinders;
-    private EngineType engine_type;
-    private Color interior_color;
-    private Color exterior_color;
-    @NotEmpty(message = "Number of seats cannot be empty!")
+//    @NotEmpty(message = "Please enter drive train!")
+    private DriveTrain driveTrain;
+//    @NotEmpty(message = "Please enter engine power!")
+    private Integer enginePower;
+//    @NotEmpty(message = "Please enter engine liters!")
+    private String engineLiters;
+//    @NotEmpty(message = "Please enter number of engine cylinders!")
+    private Integer engineCylinders;
+    private EngineType engineType;
+//    @NotEmpty(message = "Please enter interior color!")
+    private Color interiorColor;
+//    @NotEmpty(message = "Please enter exterior color!")
+    private Color exteriorColor;
+//    @NotEmpty(message = "Please enter number of seats!")
     private Integer seats;
-    @NotEmpty(message = "Please select yes/no!")
-    private Boolean rookie;
 
-    //todo: relations
+    // Statisctics
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime createdOn;
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    private LocalDateTime updatedOn;
+
+    // Make and Model
+//    @NotEmpty(message = "Please enter number of seats!")
+    private String make;
+//    @NotEmpty(message = "Please enter number of seats!")
+    private String model;
+
+    // Relations
     private List<String> pictures;
     private UserEntity createdBy;
-    private CarModelDto model;
 }

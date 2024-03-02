@@ -1,6 +1,5 @@
 package com.iag.iagApp.service;
 
-import com.iag.iagApp.dto.CarModelDto;
 import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.model.Offer;

@@ -2,20 +2,21 @@ package com.iag.iagApp.service;
 
 
 import com.iag.iagApp.dto.CarModelDto;
-import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.model.CarModel;
-import com.iag.iagApp.model.Offer;
 
 import java.util.List;
 
 public interface CarModelService {
     List<CarModelDto> findAllCarModels();
+    List<String> findAllMakes();
+
+    List<CarModelDto> findAllModelForMake(String make);
 
     CarModelDto findById(Long id);
 
     List<CarModelDto> findByMake(String make);
 
-    List<CarModelDto> findByMakeModel(String make, String model);
+    CarModelDto findByMakeModel(String make, String model);
 
     CarModel saveCarModel(CarModelDto carModelDto);
 
