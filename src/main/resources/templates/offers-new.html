@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Blog Post - Start Bootstrap Template</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <!-- Fonts: -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova:wght@500&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<style>
+    .custom-file-upload {
+        cursor: pointer;
+        padding: 6px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+    }
+
+    .custom-file-upload:hover {
+        background-color: #343a40; /* Darker background on hover */
+    }
+
+    .custom-medium-input {
+        width: 140px;
+        padding: 6px;
+        border-color: #cbd1d7;
+        border-radius: 5px;
+        color: #6C757D;
+    }
+
+    .custom-small-input {
+        width: 75px;
+        padding: 6px;
+        border-color: #cbd1d7;
+        border-radius: 5px;
+        color: #6C757D;
+    }
+
+    .offer-div{
+        border-left-style: solid;
+        border-left-width: 2px;
+        border-left-color: rgba(33, 37, 41, 0.66);
+        border-right-style: solid;
+        border-right-width: 2px;
+        border-right-color: rgba(33, 37, 41, 0.66);
+        background-color: white;
+        padding: 40px;
+    }
+
+    body {
+        background-color: #1e2125;
+        background-size: cover;
+        background-position: center;
+        padding: 40px;
+    }
+
+    .input-title{
+        font-size: 20px;
+        font-weight: bold;
+        font-family: 'Ibarra Real Nova', serif;
+    }
+
+    .insert-button{
+        cursor: pointer;
+        padding: 6px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        width: 200px;
+    }
+</style>
+<!-- Create offer form-->
+<div class="container offer-div" style="width: 900px;">
+    <div class="row justify-content-center">
+        <form th:method="post" th:action="@{/offers/new}" th:object="${offer}">
+            <!-- Title -->
+            <div class="form-group row mb-3">
+                <label for="title" class="col-sm-4 col-form-label input-title">Title</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                           class="form-control"
+                           id="title"
+                           name="title"
+                           placeholder="Title"
+                           th:field="*{title}"
+                           required
+                    >
+                </div>
+            </div>
+            <!-- Vehicle Make-->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="vehicleMake" class="col-sm-4 col-form-label input-title w-100">Vehicle Make:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-medium-input" id="vehicleMake" name="make" required>
+                        <option value="">Select</option>
+                        <!-- Populate options for vehicle makes -->
+                        <option th:each="make : ${makeList}" th:text="${make}" th:value="${make}"></option>
+                    </select>
+                </div>
+            </div>
+            <!-- Vehicle Model -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="vehicleModel" class="col-sm-4 col-form-label input-title w-100">Vehicle Model:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-medium-input" id="vehicleModel" name="model" required>
+                        <option value="">Select</option>
+                        <!-- Options for vehicle models will be populated dynamically -->
+                    </select>
+                </div>
+            </div>
+            <!-- Description -->
+            <div class="form-group row mb-3">
+                <label for="description" class="col-sm-4 col-form-label input-title">Description</label>
+                <div class="col-sm-8">
+                    <textarea
+                            type="text"
+                            class="form-control"
+                            style="max-height: 100px;"
+                            id="description"
+                            name="description"
+                            placeholder="Description"
+                            th:field="*{description}"
+                            required
+                    ></textarea>
+                </div>
+            </div>
+            <!-- Price -->
+            <div class="form-group row mb-3">
+                <label for="price" class="col-sm-4 col-form-label input-title">Price</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                           class="form-control custom-medium-input"
+                           id="price"
+                           name="price"
+                           placeholder="Price"
+                           th:field="*{price}"
+                           required
+                    >
+                </div>
+            </div>
+            <!-- Vehicle condition -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4 col-form-label input-title">Vehicle condition</div>
+                <div class="col-sm-8">
+                    <div class="form-check" th:each="condition : ${vehicleCondition}">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="condition"
+                               th:id="'condition' + ${condition}"
+                               th:value="${condition}"
+                               th:checked="${#strings.equals(condition, 'NEW')} ? 'checked' : null"
+                               required
+                        >
+                        <label class="form-check-label"
+                               th:for="'condition' + ${condition}"
+                               th:text="${condition}"
+                        ></label>
+                    </div>
+                </div>
+            </div>
+            <!-- Distance passed -->
+            <div class="form-group row mb-3">
+                <label for="distancePassed" class="col-sm-4 col-form-label input-title">Distance passed</label>
+                <div class="col-sm-8">
+                    <input type="number"
+                           class="form-control custom-medium-input"
+                           id="distancePassed"
+                           name="distancePassed"
+                           placeholder="Enter in kilometers"
+                           th:field="*{distancePassed}"
+                           required
+                    >
+                </div>
+            </div>
+            <!-- Trade -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4 col-form-label input-title">Available for trade</div>
+                <div class="col-sm-8">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="trade"
+                               name="trade"
+                               th:value="true"
+                               required
+                        >
+                        <label class="form-check-label" for="trade">
+                            <!-- Label Text -->
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- Style -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="style" class="col-sm-4 col-form-label input-title w-100">Body style of vehicle</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-medium-input" id="style" name="style" required>
+                        <option value="">Select</option>
+                        <!-- Loop to generate options for years -->
+                        <option th:each="style : ${styles}"
+                                th:value="${style}"
+                                th:text="${style}"
+                        >
+                    </select>
+                </div>
+            </div>
+            <!-- Year -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="year" class="col-sm-4 col-form-label input-title w-100">Select a year:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-medium-input" id="year" name="year" required>
+                        <option value="">Select</option>
+                        <!-- Loop to generate options for years -->
+                        <option th:each="year : ${#numbers.sequence(1950,2022)}"
+                                th:value="${year}"
+                                th:text="${year}"
+                        >
+                    </select>
+                </div>
+            </div>
+            <!-- Fuel -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="fuel" class="col-sm-4 col-form-label input-title w-100">Select fuel type:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-medium-input" id="fuel" name="fuel" required>
+                        <option value="">Select</option>
+                        <option th:each="fuel : ${fuelTypes}"
+                                th:value="${fuel}"
+                                th:text="${fuel}"
+                        >
+                    </select>
+                </div>
+            </div>
+            <!-- Transmission -->
+            <div class="form-group row mb-3">
+                <label class="col-sm-4 col-form-label input-title">Transmission type</label>
+                <div class="col-sm-8">
+                    <div class="form-check" th:each="t : ${transmissionTypes}">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="transmission"
+                               th:id="'transmission' + ${t}"
+                               th:value="${t}"
+                               th:checked="${#strings.equals(t, 'MANUAL')} ? 'checked' : null"
+                               required
+                        >
+                        <label class="form-check-label"
+                               th:for="'transmission' + ${t}"
+                               th:text="${t}"
+                        ></label>
+                    </div>
+                </div>
+            </div>
+            <!-- Drive Train -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="driveTrain" class="col-sm-4 col-form-label input-title w-100">Drive Train:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-small-input" id="driveTrain" name="driveTrain" required>
+                        <option value="">Select</option>
+                        <option th:each="dt : ${driveTrain}"
+                                th:value="${dt}"
+                                th:text="${dt}"
+                        >
+                    </select>
+                </div>
+            </div>
+            <!-- Engine Power -->
+            <div class="form-group row mb-3">
+                <label for="enginePower" class="col-sm-4 col-form-label input-title">Engine Power</label>
+                <div class="col-sm-8">
+                    <input type="number"
+                           class="form-control custom-small-input"
+                           id="enginePower"
+                           name="enginePower"
+                           placeholder="Enter Engine Power"
+                           th:field="*{enginePower}"
+                           required
+                    >
+                </div>
+            </div>
+            <!-- Engine l -->
+            <div class="form-group row mb-3">
+                <label for="engineLiters" class="col-sm-4 col-form-label input-title">Engine in liters (Example: 4.0):</label>
+                <div class="col-sm-8">
+                    <input type="text"
+                           class="form-control custom-small-input"
+                           id="engineLiters"
+                           name="engineLiters"
+                           placeholder=""
+                           th:field="*{engineLiters}"
+                           required
+                    >
+                </div>
+            </div>
+            <!-- Engine Num. Cylinders -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="engineCylinders" class="col-sm-4 col-form-label input-title w-100">Engine Cylinder Number:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="dropdown custom-medium-input" id="engineCylinders" name="engineCylinders" required>
+                        <option value="1">Select number of cylinders</option>
+                        <option value="2">2 cylinders</option>
+                        <option value="3">3 cylinders</option>
+                        <option value="4">4 cylinders</option>
+                        <option value="5">5 cylinders</option>
+                        <option value="6">6 cylinders</option>
+                        <option value="8">8 cylinders</option>
+                        <option value="10">10 cylinders</option>
+                        <option value="12">12 cylinders</option>
+                        <option value="16">16 cylinders</option>
+                        <option value="0">Other</option>
+                        <!-- Add more options if needed -->
+                    </select>
+                </div>
+            </div>
+            <!-- Engine Type -->
+            <div class="form-group row mb-3">
+                <div class="col-sm-4">
+                    <label for="engineType" class="col-sm-4 col-form-label input-title w-100">Engine type:</label>
+                </div>
+                <div class="col-sm-8">
+                    <select class="form-control custom-small-input" id="engineType" name="engineType" required>
+                        <!-- Engine types will be dynamically populated based on selected cylinders -->
+                    </select>
+                </div>
+            </div>
+            <!-- Interior and Exterior Color Type -->
+            <hr>
+            <div class="form-group row mb-3">
+                <div class="col-sm-6 justify-content-end align-content-end">
+                    <div class="col-sm-4 col-form-label input-title">Exterior color</div>
+                    <div class="col-sm-3" th:each="color : ${color}">
+                        <div class="d-inline-flex align-items-center">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="exteriorColor"
+                                   th:id="'exteriorColor' + ${color}"
+                                   th:value="${color}"
+                                   required
+                            >
+                            <div class="d-inline-flex align-items-center">
+                                <div th:style="'margin-top: 4px; margin-left: 5px; margin-right: 3px; width: 15px; height: 15px; background-color: ' + (${#strings.equals(color, 'WHITE')} ? '#EEF0F1E8' : (${#strings.equals(color, 'OTHER')} ? '#EEF0F1E8' : ${color}))"></div>
+                                <label style="margin-top: 2px" class="form-check-label" th:for="'exteriorColor' + ${color}"
+                                       th:text="${color}"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="col-sm-4 col-form-label input-title">Interior color</div>
+                    <div class="col-sm-3" th:each="color : ${color}">
+                        <div class="d-inline-flex align-items-center">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="interiorColor"
+                                   th:id="'interiorColor' + ${color}"
+                                   th:value="${color}"
+                                   required
+                            >
+                            <div class="d-inline-flex align-items-center">
+                                <div th:style="'margin-top: 4px; margin-left: 5px; margin-right: 3px; width: 15px; height: 15px; background-color: ' + (${#strings.equals(color, 'WHITE')} ? '#EEF0F1E8' : (${#strings.equals(color, 'OTHER')} ? '#EEF0F1E8' : ${color}))"></div>
+                                <label style="margin-top: 2px" class="form-check-label" th:for="'interiorColor' + ${color}"
+                                       th:text="${color}"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <!-- Seats -->
+            <div class="form-group row mb-3">
+                <label for="numSeats" class="col-sm-4 col-form-label input-title">Number of seats</label>
+                <div class="col-sm-8">
+                    <input type="number"
+                           class="form-control custom-small-input"
+                           id="numSeats"
+                           name="numSeats"
+                           placeholder=""
+                           th:field="*{seats}"
+                           required
+                    >
+                </div>
+            </div>
+            <!-- Pictures -->
+            <div class="form-group row mb-3">
+                <label for="images" class="col-sm-4 col-form-label input-title">Images (The first image is the cover)</label>
+                <div class="col-sm-8">
+                    <label for="images" class="custom-file-upload btn btn-dark">Choose Images</label>
+                    <input type="file" id="images" name="pictures" multiple onchange="previewImages(event)" hidden="hidden" required>
+                </div>
+            </div>
+
+            <!-- Display error message if pictures are not inputted -->
+            <div class="form-group row mb-3 text-danger" th:if="${#fields.hasErrors('pictures')}">
+                <div class="col-sm-8 offset-sm-4">
+                    Please choose at least one image.
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <div class="col-sm-12">
+                    <div id="image-preview"></div> <!-- This div will hold the preview images -->
+                </div>
+            </div>
+
+            <div class="form-group row mb-3 justify-content-center">
+                <div class="col-sm-12 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-dark insert-button">Insert new vehicle</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Bootstrap core JS (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+<!-- Script for engine cylinders and type -->
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#engineCylinders').change(function () {
+            var selectedCylinders = $(this).val();
+            $.ajax({
+                url: '/getEngineTypes', // Endpoint to fetch engine types based on cylinders
+                type: 'GET',
+                data: {cylinders: selectedCylinders},
+                success: function (data) {
+                    $('#engineType').empty(); // Clear existing options
+                    $.each(data, function (index, value) {
+                        $('#engineType').append('<option value="' + value + '">' + value + '</option>');
+                    });
+                    // Show the engine type dropdown if it's hidden
+                    $('#engineType').parent().show();
+                },
+                error: function () {
+                    console.error('Error fetching engine types');
+                }
+            });
+        });
+    });
+</script>
+<!-- Script for make and model -->
+<script>
+    $(document).ready(function () {
+        // Event listener for changes in vehicle make select
+        $('#vehicleMake').change(function () {
+            var selectedMake = $(this).val(); // Get the selected make
+            var vehicleModelSelect = $('#vehicleModel'); // Get the vehicle model select element
+
+            // Clear previous options
+            vehicleModelSelect.empty().append('<option value="">Loading...</option>');
+
+            // Make AJAX request to fetch models for the selected make
+            $.ajax({
+                url: '/getModels', // Endpoint to fetch models
+                type: 'GET',
+                data: { make: selectedMake },
+                success: function(models) {
+                    // Clear previous options
+                    vehicleModelSelect.empty().append('<option value="">Select</option>');
+
+                    // Populate options for vehicle models based on the received data
+                    $.each(models, function(index, model) {
+                        vehicleModelSelect.append($('<option></option>').attr('value', model).text(model));
+                    });
+                },
+                error: function() {
+                    console.error('Error fetching models');
+                    // Display an error message or handle the error as needed
+                }
+            });
+        });
+    });
+</script>
+<!--Display the images as they are being uploaded-->
+<script>
+    function previewImages(event) {
+        var preview = document.getElementById('image-preview');
+        preview.innerHTML = ''; // Clear previous previews
+
+        var files = event.target.files; // Get the selected files
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var img = document.createElement('img'); // Create an <img> element
+                img.src = e.target.result; // Set the source of the image to the data URL
+                img.style.maxHeight = '200px'; // Set max width for display
+                img.style.maxWidth = '400px'; // Set max height for display
+                img.style.margin = '3px';
+                img.style.backgroundSize = 'cover';
+                img.style.backgroundPosition = 'center';
+                preview.appendChild(img); // Append the image to the preview div
+            };
+
+            reader.readAsDataURL(file); // Read the file as a data URL
+        }
+    }
+</script>
+<script>
+    function uploadImages(event) {
+        var files = event.target.files;
+        var formData = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            formData.append('images[]', files[i]);
+        }
+
+        // Send images to server using AJAX
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/upload-images', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var uploadedImageUrls = JSON.parse(xhr.responseText);
+                // Handle the uploaded image URLs (e.g., display them, store them in database)
+                console.log(uploadedImageUrls);
+            }
+        };
+        xhr.send(formData);
+    }
+</script>
+</body>
+</html>

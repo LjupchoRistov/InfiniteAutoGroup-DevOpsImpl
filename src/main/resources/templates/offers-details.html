@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html
-        xmlns:th="http://thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        layout:decorate="~{layout}">
+<html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -19,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova:wght@500&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&display=swap"
           rel="stylesheet">
 </head>
-<body layout:fragment="body">
+<body>
 <style>
     .custom-font {
         font-family: 'Ibarra Real Nova', serif;
@@ -59,7 +56,7 @@
                     <div class="text-muted fst-italic mb-2 text-center">
                         <span th:text="${offer.getYear()}">Vehicle year production</span>
                         <span> - </span>
-                        <span th:text="${offer.getDistance_passed()}">Vehicle distance passed</span>
+                        <span th:text="${offer.getDistancePassed()}">Vehicle distance passed</span>
                         <span>km</span>
                     </div> <!-- Center the meta content -->
                     <!-- Post categories-->
@@ -67,17 +64,17 @@
                         <a th:text="${offer.getFuel()}" class="badge bg-secondary text-decoration-none link-light"
                            href="#!">Vehicle fuel type</a>
                         <a class="badge bg-secondary text-decoration-none link-light" href="#!">
-                            <span th:text="${offer.getEngine_liters()}"></span>
+                            <span th:text="${offer.getEngineLiters()}"></span>
                             <span> liters</span>
                         </a>
-                        <a th:text="${offer.getEngine_type()}"
+                        <a th:text="${offer.getEngineType()}"
                            class="badge bg-secondary text-decoration-none link-light" href="#!">Vehicle engine type</a>
                         <a class="badge bg-secondary text-decoration-none link-light" href="#!">
-                            <span th:text="${offer.getEngine_cylinders()}"></span>
+                            <span th:text="${offer.getEngineCylinders()}"></span>
                             <span> cylinders</span>
                         </a>
                         <a class="badge bg-secondary text-decoration-none link-light" href="#!">
-                            <span th:text="${offer.getEngine_power()}"></span>
+                            <span th:text="${offer.getEnginePower()}"></span>
                             <span> HP</span>
                         </a>
                         <a th:text="${offer.getStyle()}" class="badge bg-secondary text-decoration-none link-light"
@@ -99,28 +96,28 @@
                         <table class="table mt-0 pt-0">
                             <tbody>
                             <tr>
-                                <th style="width: 50%; text-align: start;">Attribute</th>
-                                <td th:text="${offer.getModel().getMake()}">Make</td>
+                                <th style="width: 50%; text-align: start;">Make</th>
+                                <td th:text="${offer.getMake()}">Make</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Model</th>
-                                <td th:text="${offer.getModel().getModel()}">Model</td>
+                                <td th:text="${offer.getModel()}">Model</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Year</th>
-                                <td th:text="${offer.getYear()}">Model</td>
+                                <td th:text="${offer.getYear()}">Year</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Distance passed</th>
-                                <td th:text="${offer.getDistance_passed()}">Model</td>
+                                <td th:text="${offer.getDistancePassed()}">Distance passed</td> km
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Body style</th>
-                                <td th:text="${offer.getStyle()}">Distance Passed</td>
+                                <td th:text="${offer.getStyle()}">Body style</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Seats</th>
-                                <td th:text="${offer.getSeats()}">Distance Passed</td>
+                                <td th:text="${offer.getSeats()}">Seats</td>
                             </tr>
                             </tbody>
                         </table>
@@ -130,30 +127,27 @@
                             <tbody>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Cylinders</th>
-                                <td th:text="${offer.getEngine_cylinders()}">Year</td>
+                                <td th:text="${offer.getEngineCylinders()}">Cylinders</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Volume, L</th>
-                                <td th:text="${offer.getEngine_liters()}">Distance Passed</td>
+                                <td th:text="${offer.getEngineLiters()}">Volume, L</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Transmission</th>
-                                <td>
-                                    <span th:text="${offer.getTransmission()}"></span>
-                                    <span> km</span>
-                                </td>
+                                <td th:text="${offer.getTransmission()}">Transmission</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Drive Train</th>
-                                <td th:text="${offer.getDrive_train()}">Distance Passed</td>
+                                <td th:text="${offer.getDriveTrain()}">Drive Train</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Exterior Color</th>
-                                <td th:text="${offer.getExterior_color()}">Distance Passed</td>
+                                <td th:text="${offer.getExteriorColor()}">Exterior Color</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Interior Color</th>
-                                <td th:text="${offer.getInterior_color()}">Distance Passed</td>
+                                <td th:text="${offer.getInteriorColor()}">Interior Color</td>
                             </tr>
                             </tbody>
                         </table>
@@ -214,9 +208,9 @@
     <div class="row justify-content-center">
         <h3 class="custom-font mb-2">
             All
-            <span th:text="${offer.getModel().getMake()}"></span>
+            <span th:text="${offer.getMake()}"></span>
 
-            <span th:text="${offer.getModel().getModel()}"></span>
+            <span th:text="${offer.getModel()}"></span>
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
@@ -226,7 +220,7 @@
                         <!-- Offer image-->
                         <div class="h-100" style="width: 100%; height: 200px; overflow: hidden;">
                             <img class="card-img-top" style="width: 100%; height: 100%; object-fit: cover;"
-                                 th:src="${offer.getCover_picture()}" alt="...">
+                                 th:src="${offer.getCoverPicture()}" alt="...">
                         </div>
                         <!-- Offer details-->
                         <div class="card-body p-2">
@@ -235,7 +229,7 @@
                             <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span th:text="${offer.getPrice()}"></span><span> €</span></span>
                             <br>
                             <span style="color: rgba(33,37,41,0.81);">
-                                <span th:text="${offer.getDistance_passed()}"></span>
+                                <span th:text="${offer.getDistancePassed()}"></span>
                                 <span> km</span>
                             </span>
                         </div>
@@ -248,7 +242,7 @@
     <div class="row justify-content-center">
         <h3 class="custom-font mb-2">
             All from
-            <span th:text="${offer.getModel().getMake()}"></span>
+            <span th:text="${offer.getMake()}"></span>
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
@@ -258,7 +252,7 @@
                         <!-- Offer image-->
                         <div class="h-100" style="width: 100%; height: 200px; overflow: hidden;">
                             <img class="card-img-top" style="width: 100%; height: 100%; object-fit: cover;"
-                                 th:src="${offer.getCover_picture()}" alt="...">
+                                 th:src="${offer.getCoverPicture()}" alt="...">
                         </div>
                         <!-- Offer details-->
                         <div class="card-body p-2">
@@ -267,7 +261,7 @@
                             <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span th:text="${offer.getPrice()}"></span><span> €</span></span>
                             <br>
                             <span style="color: rgba(33,37,41,0.81);">
-                                <span th:text="${offer.getDistance_passed()}"></span>
+                                <span th:text="${offer.getDistancePassed()}"></span>
                                 <span> km</span>
                             </span>
                         </div>
@@ -290,7 +284,7 @@
                         <!-- Offer image-->
                         <div class="h-100" style="width: 100%; height: 200px; overflow: hidden;">
                             <img class="card-img-top" style="width: 100%; height: 100%; object-fit: cover;"
-                                 th:src="${offer.getCover_picture()}" alt="...">
+                                 th:src="${offer.getCoverPicture()}" alt="...">
                         </div>
                         <!-- Offer details-->
                         <div class="card-body p-2">
@@ -299,7 +293,7 @@
                             <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span th:text="${offer.getPrice()}"></span><span> €</span></span>
                             <br>
                             <span style="color: rgba(33,37,41,0.81);">
-                                <span th:text="${offer.getDistance_passed()}"></span>
+                                <span th:text="${offer.getDistancePassed()}"></span>
                                 <span> km</span>
                             </span>
                         </div>

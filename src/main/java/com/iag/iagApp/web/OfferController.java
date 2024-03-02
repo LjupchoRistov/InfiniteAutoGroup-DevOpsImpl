@@ -3,12 +3,15 @@ package com.iag.iagApp.web;
 import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.model.Offer;
+import com.iag.iagApp.model.enums.*;
 import com.iag.iagApp.service.CarModelService;
 import com.iag.iagApp.service.OfferService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -54,6 +57,62 @@ public class OfferController {
     @GetMapping("/layout")
     public String layout() {
         return "layout";
+    }
+
+    @GetMapping("/offers/new")
+    public String addOffer(Model model) {
+        Offer offer = new Offer();
+
+        // Add offer template
+        model.addAttribute("offer", offer);
+
+        // Add all colors
+        model.addAttribute("color", Color.values());
+
+        // Add conditions
+        model.addAttribute("vehicleCondition", Condition.values());
+
+        // Add drive train types
+        model.addAttribute("driveTrain", DriveTrain.values());
+
+        // Add all engine types
+        model.addAttribute("engineTypes", EngineType.values());
+
+        // Add all fuel types
+        model.addAttribute("fuelTypes", Fuel.values());
+
+        // Add all body styles
+        model.addAttribute("styles", Style.values());
+
+        // Add all transmission types
+        model.addAttribute("transmissionTypes", Transmission.values());
+
+        // Add all vehicle makes
+        model.addAttribute("makeList", this.carModelService.findAllMakes());
+
+        //todo: engine power is entered as String, need to be converted into decimal, needs to be cheked for . REGEX(num, ., num)
+
+        return "offers-new";
+    }
+
+    @PostMapping("/offers/new")
+    public String saveOffer(@Valid @ModelAttribute("offer") OfferDto offerDto,
+                            BindingResult result,
+                            @RequestParam("pictures") MultipartFile[] pictures,
+                            Model model) {
+        if (result.hasErrors() || pictures == null || pictures.length == 0) {
+            if (pictures == null || pictures.length == 0) {
+                // Add a custom error message if pictures are not uploaded
+                result.rejectValue("pictures", "offer.pictures.required", "Please choose at least one image.");
+            }
+            // If there are validation errors or no pictures uploaded, return to the form with the error messages
+            return "offers-new";
+        }
+
+        // Save the offer
+        this.offerService.saveOffer(offerDto);
+
+        return "redirect:/offers";
     }
 
 }

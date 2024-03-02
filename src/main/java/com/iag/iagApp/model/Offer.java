@@ -28,7 +28,7 @@ public class Offer {
     private String title;
 //    @Lob // Indicates that the description field should be mapped to a large object type
     private String description;
-    private String cover_picture;
+    private String coverPicture;
     private Long price;
     @Enumerated(value = EnumType.STRING)
     private Condition condition;
@@ -38,30 +38,29 @@ public class Offer {
     private Integer year;
     @Enumerated(value = EnumType.STRING)
     private Fuel fuel;
-    private Long distance_passed;
+    private Integer distancePassed;
     @Enumerated(value = EnumType.STRING)
     private Transmission transmission;
     @Enumerated(value = EnumType.STRING)
-    private DriveTrain drive_train;
-    private Integer engine_power;
-    private Float engine_liters;
-    private Integer engine_cylinders;
+    private DriveTrain driveTrain;
+    private Integer enginePower;
+    private String engineLiters;
+    private Integer engineCylinders;
     @Enumerated(value = EnumType.STRING)
-    private EngineType engine_type;
+    private EngineType engineType;
     @Enumerated(value = EnumType.STRING)
-    private Color interior_color;
+    private Color interiorColor;
     @Enumerated(value = EnumType.STRING)
-    private Color exterior_color;
+    private Color exteriorColor;
     private Integer seats;
-    private Boolean rookie;
 
-    //todo: statisctics
+    // Statisctics
     @CreationTimestamp
     private LocalDateTime createdOn;
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 
-    //todo: relations
+    // Relations
     @ElementCollection
     @CollectionTable(name = "offer_pictures", joinColumns = @JoinColumn(name = "offer_id"))
     private List<String> pictures;

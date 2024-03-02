@@ -2,7 +2,6 @@ package com.iag.iagApp.service.impl;
 
 
 import com.iag.iagApp.dto.CarModelDto;
-import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.mapper.CarModelMapper;
 import com.iag.iagApp.model.CarModel;
 import com.iag.iagApp.repository.CarModelRepository;
@@ -10,6 +9,7 @@ import com.iag.iagApp.service.CarModelService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 //todo: implement mappers
 import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModel;
@@ -28,6 +28,16 @@ public class CarModelServiceImpl implements CarModelService {
         return this.carModelRepository.findAll().stream().map(CarModelMapper::mapToCarModelDto).toList();
     }
 
+    public List<String> findAllMakes(){
+        List<CarModelDto> carModelDtosList = findAllCarModels();
+        return carModelDtosList.stream().map(CarModelDto::getMake).distinct().toList();
+    }
+
+    @Override
+    public List<CarModelDto> findAllModelForMake(String make) {
+        return findAllCarModels().stream().filter(cm -> cm.getMake().equals(make)).collect(Collectors.toList());
+    }
+
     public CarModelDto findById(Long id){
         return mapToCarModelDto(this.carModelRepository.findById(id).get());
     }
@@ -37,8 +47,9 @@ public class CarModelServiceImpl implements CarModelService {
     }
 
     @Override
-    public List<CarModelDto> findByMakeModel(String make, String model) {
-        return this.carModelRepository.findAll().stream().filter(cm -> cm.getMake().equals(make) && cm.getModel().equals(model)).map(CarModelMapper::mapToCarModelDto).toList();
+    public CarModelDto findByMakeModel(String make, String model) {
+        CarModel carModel = this.carModelRepository.findByMakeEqualsAndModelEquals(make, model);
+        return mapToCarModelDto(carModel);
     }
 
     public CarModel saveCarModel(CarModelDto carModelDto){
