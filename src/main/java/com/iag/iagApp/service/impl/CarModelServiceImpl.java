@@ -28,7 +28,7 @@ public class CarModelServiceImpl implements CarModelService {
         return this.carModelRepository.findAll().stream().map(CarModelMapper::mapToCarModelDto).toList();
     }
 
-    public List<String> findAllMakes(){
+    public List<String> findAllDistinctMakes(){
         List<CarModelDto> carModelDtosList = findAllCarModels();
         return carModelDtosList.stream().map(CarModelDto::getMake).distinct().toList();
     }
@@ -63,5 +63,9 @@ public class CarModelServiceImpl implements CarModelService {
 
     public void deleteCarModel(Long id){
         this.carModelRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteCarModelByModel(String modelDelete) {
     }
 }

@@ -22,7 +22,7 @@ public class OfferRestController {
         this.carModelService = carModelService;
     }
 
-    @GetMapping("/getEngineTypes")
+    @GetMapping("/offers/getEngineTypes")
     public List<String> getEngineTypes(@RequestParam("cylinders") String cylindersStr) {
         if (cylindersStr.equalsIgnoreCase("0")) {
             List<String> targetEngineTypes = new ArrayList<>();
@@ -48,9 +48,9 @@ public class OfferRestController {
         }
     }
 
-    @GetMapping("/getModels")
+    @GetMapping("/offers/getModels")
     public List<String> getModels(@RequestParam("make") String make) {
-        return this.carModelService.findAllModelForMake(make).stream().map(CarModelDto::getModel).collect(Collectors.toList());
+        return this.carModelService.findAllModelForMake(make).stream().map(CarModelDto::getModel).toList();
     }
 
 }
