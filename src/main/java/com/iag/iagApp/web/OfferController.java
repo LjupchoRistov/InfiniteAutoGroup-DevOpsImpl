@@ -88,7 +88,7 @@ public class OfferController {
         model.addAttribute("transmissionTypes", Transmission.values());
 
         // Add all vehicle makes
-        model.addAttribute("makeList", this.carModelService.findAllMakes());
+        model.addAttribute("makeList", this.carModelService.findAllDistinctMakes());
 
         //todo: engine power is entered as String, need to be converted into decimal, needs to be cheked for . REGEX(num, ., num)
 

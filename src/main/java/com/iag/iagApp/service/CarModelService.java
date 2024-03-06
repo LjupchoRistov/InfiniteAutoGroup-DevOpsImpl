@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface CarModelService {
     List<CarModelDto> findAllCarModels();
-    List<String> findAllMakes();
+
+    List<String> findAllDistinctMakes();
 
     List<CarModelDto> findAllModelForMake(String make);
 
@@ -23,4 +24,6 @@ public interface CarModelService {
     void updateCarModel(CarModelDto carModelDto);
 
     void deleteCarModel(Long id);
+
+    void deleteCarModelByModel(String modelDelete);
 }

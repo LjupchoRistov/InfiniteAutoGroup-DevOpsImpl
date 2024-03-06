@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Blog Post - Start Bootstrap Template</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <!-- Fonts: -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ibarra+Real+Nova:wght@500&family=Lora:ital,wght@0,400..700;1,400..700&family=Noto+Serif+Display:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+
+<style>
+    table tbody tr:hover {
+        background-color: lightgray;
+    }
+
+    .offer-div {
+        border-left-style: solid;
+        border-left-width: 2px;
+        border-left-color: rgba(33, 37, 41, 0.66);
+        border-right-style: solid;
+        border-right-width: 2px;
+        border-right-color: rgba(33, 37, 41, 0.66);
+        background-color: white;
+        padding: 40px;
+    }
+
+    .container-div {
+        padding: 6px;
+        border-color: rgba(119, 136, 153, 0.45);
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 5px;
+        color: #6C757D;
+    }
+
+    .cell{
+        width: 300px;
+    }
+
+    body {
+        background-color: #1e2125;
+        background-size: cover;
+        background-position: center;
+        padding: 40px;
+    }
+</style>
+<!-- Car Model Form -->
+<div class="container offer-div" style="width: 900px;">
+    <div class="row justify-content-center">
+        <div class="row container-div mb-4">
+            <!-- Car Make Table -->
+            <div class="col-md-6">
+                <h2>Car Makes</h2>
+                <table id="carMakesTable" class="table">
+                    <thead class="cell">
+                    <tr>
+                        <th>Make</th>
+                    </tr>
+                    </thead>
+                    <tbody class="cell">
+                    <tr th:each="make : ${makes}">
+                        <td th:attr="makeValue=${make}" onclick="displayModels(this.getAttribute('makeValue'))">
+                            <span th:text="${make}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a onclick="previousMakes()" class="btn btn-primary"><-</a>
+                <a onclick="nextMakes()" class="btn btn-primary">-></a>
+            </div>
+
+            <!-- Car Model Table -->
+            <div class="col-md-6">
+                <h2>Car Models</h2>
+                <table id="carModelsTable" class="table">
+                    <thead  class="cell">
+                    <tr>
+                        <th class="w-100">Model</th>
+                        <th style="width: 50px"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="carModelsBody" class="cell">
+                    <!-- Car Models will be displayed here -->
+                    </tbody>
+                </table>
+                <a onclick="previousMakes()" class="btn btn-primary"><-</a>
+                <a onclick="nextMakes()" class="btn btn-primary">-></a>
+            </div>
+        </div>
+        <div class="row container-div">
+            <!-- Car Make Table -->
+            <div class="col-md-12">
+                <form th:method="post" th:action="@{/models/new}" th:object="${carModel}">
+                    <!-- Engine l -->
+                    <div class="form-group row mb-3">
+                        <label for="make" class="col-sm-4 col-form-label input-title">Enter make: </label>
+                        <div class="col-sm-8">
+                            <input type="text"
+                                   class="form-control custom-small-input"
+                                   id="make"
+                                   name="make"
+                                   placeholder=""
+                                   th:field="*{make}"
+                                   required
+                            >
+                        </div>
+                    </div>
+                    <!-- Engine l -->
+                    <div class="form-group row mb-3">
+                        <label for="model" class="col-sm-4 col-form-label input-title">Enter model: </label>
+                        <div class="col-sm-8">
+                            <input type="text"
+                                   class="form-control custom-small-input"
+                                   id="model"
+                                   name="model"
+                                   placeholder=""
+                                   th:field="*{model}"
+                                   required
+                            >
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Script for make and model -->
+<script th:inline="javascript">
+    function displayModels(make) {
+        console.log("Displaying models for make:", make);
+        var carModelArea = $('#carModelsBody');
+        $.ajax({
+            url: '/models/getModels',
+            type: 'GET',
+            data: {make: make},
+            success: function (models) {
+                console.log(models);
+                carModelArea.empty();
+                $.each(models, function (index, model) {
+                    var tdModelElement = $('<td th:value="' + model.id + '" th:text="' + model.model + '">' + model.model + '</td>');
+                    var tdDeleteElement = $('<td>X</td>');
+                    tdDeleteElement.attr('th:value', model.id);
+                    tdDeleteElement.css('width', '50px');
+                    tdDeleteElement.on('click', function () {
+                        deleteModel(model.id);
+                    });
+                    tdDeleteElement.hover(function () {
+                        $(this).css('cursor', 'pointer');
+                        $(this).css('color', 'darkred');
+                        $(this).css('transition', 'color 0.5s');
+                    }, function () {
+                        $(this).css('color', 'black');
+                        $(this).css('transition', 'color 0.5s');
+                    });
+                    carModelArea.append($('<tr>').append(tdModelElement).append(tdDeleteElement));
+                });
+                carModelArea.parent().show();
+            },
+            error: function () {
+                console.log('Error fetching car models. (car-models-new)')
+            }
+        });
+    }
+
+    // Delete model
+    function deleteModel(id) {
+        // Create a hidden form
+        var form = $('<form action="/models/' + id + '/delete" method="post"></form>');
+        // Append a hidden input field with the model ID
+        form.append('<input type="hidden" name="id" value="' + id + '">');
+        // Append the form to the body and submit it
+        $('body').append(form);
+        form.submit();
+    }
+</script>
+<!-- Bootstrap core JS (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
+</html>

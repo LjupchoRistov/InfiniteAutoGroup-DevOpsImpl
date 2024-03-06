@@ -46,7 +46,7 @@
         color: #6C757D;
     }
 
-    .offer-div{
+    .offer-div {
         border-left-style: solid;
         border-left-width: 2px;
         border-left-color: rgba(33, 37, 41, 0.66);
@@ -64,13 +64,13 @@
         padding: 40px;
     }
 
-    .input-title{
+    .input-title {
         font-size: 20px;
         font-weight: bold;
         font-family: 'Ibarra Real Nova', serif;
     }
 
-    .insert-button{
+    .insert-button {
         cursor: pointer;
         padding: 6px;
         border: none;
@@ -302,7 +302,8 @@
             </div>
             <!-- Engine l -->
             <div class="form-group row mb-3">
-                <label for="engineLiters" class="col-sm-4 col-form-label input-title">Engine in liters (Example: 4.0):</label>
+                <label for="engineLiters" class="col-sm-4 col-form-label input-title">Engine in liters (Example:
+                    4.0):</label>
                 <div class="col-sm-8">
                     <input type="text"
                            class="form-control custom-small-input"
@@ -317,7 +318,8 @@
             <!-- Engine Num. Cylinders -->
             <div class="form-group row mb-3">
                 <div class="col-sm-4">
-                    <label for="engineCylinders" class="col-sm-4 col-form-label input-title w-100">Engine Cylinder Number:</label>
+                    <label for="engineCylinders" class="col-sm-4 col-form-label input-title w-100">Engine Cylinder
+                        Number:</label>
                 </div>
                 <div class="col-sm-8">
                     <select class="dropdown custom-medium-input" id="engineCylinders" name="engineCylinders" required>
@@ -343,6 +345,7 @@
                 </div>
                 <div class="col-sm-8">
                     <select class="form-control custom-small-input" id="engineType" name="engineType" required>
+                        <option value="">Select</option>
                         <!-- Engine types will be dynamically populated based on selected cylinders -->
                     </select>
                 </div>
@@ -363,7 +366,8 @@
                             >
                             <div class="d-inline-flex align-items-center">
                                 <div th:style="'margin-top: 4px; margin-left: 5px; margin-right: 3px; width: 15px; height: 15px; background-color: ' + (${#strings.equals(color, 'WHITE')} ? '#EEF0F1E8' : (${#strings.equals(color, 'OTHER')} ? '#EEF0F1E8' : ${color}))"></div>
-                                <label style="margin-top: 2px" class="form-check-label" th:for="'exteriorColor' + ${color}"
+                                <label style="margin-top: 2px" class="form-check-label"
+                                       th:for="'exteriorColor' + ${color}"
                                        th:text="${color}"></label>
                             </div>
                         </div>
@@ -382,7 +386,8 @@
                             >
                             <div class="d-inline-flex align-items-center">
                                 <div th:style="'margin-top: 4px; margin-left: 5px; margin-right: 3px; width: 15px; height: 15px; background-color: ' + (${#strings.equals(color, 'WHITE')} ? '#EEF0F1E8' : (${#strings.equals(color, 'OTHER')} ? '#EEF0F1E8' : ${color}))"></div>
-                                <label style="margin-top: 2px" class="form-check-label" th:for="'interiorColor' + ${color}"
+                                <label style="margin-top: 2px" class="form-check-label"
+                                       th:for="'interiorColor' + ${color}"
                                        th:text="${color}"></label>
                             </div>
                         </div>
@@ -406,10 +411,12 @@
             </div>
             <!-- Pictures -->
             <div class="form-group row mb-3">
-                <label for="images" class="col-sm-4 col-form-label input-title">Images (The first image is the cover)</label>
+                <label for="images" class="col-sm-4 col-form-label input-title">Images (The first image is the
+                    cover)</label>
                 <div class="col-sm-8">
                     <label for="images" class="custom-file-upload btn btn-dark">Choose Images</label>
-                    <input type="file" id="images" name="pictures" multiple onchange="previewImages(event)" hidden="hidden" required>
+                    <input type="file" id="images" name="pictures" th:value="${this}" multiple
+                           onchange="previewImages(event)" hidden="hidden" required>
                 </div>
             </div>
 
@@ -445,17 +452,17 @@
     $(document).ready(function () {
         $('#engineCylinders').change(function () {
             var selectedCylinders = $(this).val();
+            var inputEngineTypes = $('#engineType');
             $.ajax({
-                url: '/getEngineTypes', // Endpoint to fetch engine types based on cylinders
+                url: '/offers/getEngineTypes',
                 type: 'GET',
                 data: {cylinders: selectedCylinders},
-                success: function (data) {
-                    $('#engineType').empty(); // Clear existing options
-                    $.each(data, function (index, value) {
-                        $('#engineType').append('<option value="' + value + '">' + value + '</option>');
+                success: function (listOfEngineTypes) {
+                    inputEngineTypes.empty().append('<option value="">Select</option>');
+                    $.each(listOfEngineTypes, function (index, value) {
+                        inputEngineTypes.append('<option value="' + value + '">' + value + '</option>');
                     });
-                    // Show the engine type dropdown if it's hidden
-                    $('#engineType').parent().show();
+                    inputEngineTypes.parent().show();
                 },
                 error: function () {
                     console.error('Error fetching engine types');
@@ -465,33 +472,24 @@
     });
 </script>
 <!-- Script for make and model -->
-<script>
+<script th:inline="javascript">
     $(document).ready(function () {
-        // Event listener for changes in vehicle make select
         $('#vehicleMake').change(function () {
-            var selectedMake = $(this).val(); // Get the selected make
-            var vehicleModelSelect = $('#vehicleModel'); // Get the vehicle model select element
-
-            // Clear previous options
-            vehicleModelSelect.empty().append('<option value="">Loading...</option>');
-
-            // Make AJAX request to fetch models for the selected make
+            var selectedMake = $(this).val();
+            var inputMakeModels = $('#vehicleModel');
             $.ajax({
-                url: '/getModels', // Endpoint to fetch models
+                url: '/offers/getModels',
                 type: 'GET',
-                data: { make: selectedMake },
-                success: function(models) {
-                    // Clear previous options
-                    vehicleModelSelect.empty().append('<option value="">Select</option>');
-
-                    // Populate options for vehicle models based on the received data
-                    $.each(models, function(index, model) {
-                        vehicleModelSelect.append($('<option></option>').attr('value', model).text(model));
+                data: {make: selectedMake},
+                success: function (listOfModels) {
+                    inputMakeModels.empty().append('<option value="">Select</option>');
+                    $.each(listOfModels, function (index, value) {
+                        inputMakeModels.append('<option value="' + value + '">' + value + '</option>')
                     });
+                    inputMakeModels.parent().show();
                 },
-                error: function() {
+                error: function ()  {
                     console.error('Error fetching models');
-                    // Display an error message or handle the error as needed
                 }
             });
         });
@@ -536,7 +534,7 @@
         // Send images to server using AJAX
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload-images', true);
-        xhr.onload = function() {
+        xhr.onload = function () {
             if (xhr.status === 200) {
                 var uploadedImageUrls = JSON.parse(xhr.responseText);
                 // Handle the uploaded image URLs (e.g., display them, store them in database)
