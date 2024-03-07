@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "offer")
+@Table(name = "offers")
 public class Offer {
     //todo: table
     @Id
