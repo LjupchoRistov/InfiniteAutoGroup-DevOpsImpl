@@ -1,21 +1,16 @@
 package com.iag.iagApp.data;
 
 import com.iag.iagApp.mapper.OfferMapper;
-import com.iag.iagApp.model.CarModel;
-import com.iag.iagApp.model.Offer;
-import com.iag.iagApp.model.Role;
-import com.iag.iagApp.model.UserEntity;
+import com.iag.iagApp.model.*;
 import com.iag.iagApp.model.enums.*;
-import com.iag.iagApp.repository.CarModelRepository;
-import com.iag.iagApp.repository.OfferRepository;
-import com.iag.iagApp.repository.RoleRepository;
-import com.iag.iagApp.repository.UserRepository;
+import com.iag.iagApp.repository.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 @Component
@@ -24,17 +19,42 @@ public class DataInitializer {
     private final OfferRepository offerRepository;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private final MakeRepository makeRepository;
+    private final ModelRepository modelRepository;
 
-    public DataInitializer(CarModelRepository carModelRepository, OfferRepository offerRepository, RoleRepository roleRepository, UserRepository userRepository) {
+    public DataInitializer(CarModelRepository carModelRepository, OfferRepository offerRepository, RoleRepository roleRepository, UserRepository userRepository, MakeRepository makeRepository, ModelRepository modelRepository) {
         this.carModelRepository = carModelRepository;
         this.offerRepository = offerRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
+        this.makeRepository = makeRepository;
+        this.modelRepository = modelRepository;
     }
 
     @PostConstruct
     public void initData() {
-        if (this.carModelRepository.findAll().isEmpty()){
+        if (this.makeRepository.findAll().isEmpty()){
+            AtomicLong counter = new AtomicLong(400);
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Porsche"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "BMW"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Mercedes"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Audi"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Ferrari"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Aston Martin"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Range Rover"));
+        }
+
+        if (this.modelRepository.findAll().isEmpty()){
+            AtomicLong counter = new AtomicLong(400);
+            MakeEntity make = this.makeRepository.findByMakeEquals("Porsche");
+            this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT3RS", make));
+            this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT2RS", make));
+            this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT3", make));
+            this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT2", make));
+            this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911", make));
+        }
+
+        if (this.makeRepository.findAll().isEmpty()){
             CarModel carModel1 = new CarModel((long)999, "Porsche", "911 GT3 RS");
             CarModel carModel2 = new CarModel((long)998, "Porsche", "911 GT2 RS");
             CarModel carModel3 = new CarModel((long)997, "Porsche", "911");
