@@ -51,33 +51,41 @@
                 <div class="mb-4">
                     <!-- Post title-->
                     <h1 th:text="${offer.getTitle()}" class="custom-font fw-bolder mb-1 text-center">Offer title</h1>
-                    <!-- Center the title -->
                     <!-- Post meta content-->
                     <div class="text-muted fst-italic mb-2 text-center">
                         <span th:text="${offer.getYear()}">Vehicle year production</span>
-                        <span> - </span>
-                        <span th:text="${offer.getDistancePassed()}">Vehicle distance passed</span>
-                    </div> <!-- Center the meta content -->
-                    <!-- Post categories-->
-                    <div class="text-center" style="font-size: 20px"> <!-- Center the categories -->
-                        <a th:text="${offer.getFuel()}" class="badge bg-secondary text-decoration-none link-light"
-                           href="#!">Vehicle fuel type</a>
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                        -
+                        <span th:text="${offer.getDistancePassed()}">Vehicle distance passed</span> km
+                    </div>
+                    <!-- Post categories -->
+                    <div class="text-center" style="font-size: 20px">
+                        <!-- Fuel Category filter -->
+                        <a th:text="${offer.getFuel()}"
+                           class="badge bg-secondary text-decoration-none link-light"
+                           th:href="@{/offers(filterType='fuel', filterAttr=${offer.getFuel()})}">Vehicle fuel type</a>
+                        <!-- Engine Liters Category filter -->
+                        <a class="badge bg-secondary text-decoration-none link-light" th:href="@{/offers(filterType='engineLiters', filterAttr=${offer.getEngineLiters()})}">
                             <span th:text="${offer.getEngineLiters()}"></span>
                             <span> liters</span>
                         </a>
+                        <!-- Engine Type Category filter -->
                         <a th:text="${offer.getEngineType()}"
-                           class="badge bg-secondary text-decoration-none link-light" href="#!">Vehicle engine type</a>
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                           class="badge bg-secondary text-decoration-none link-light"
+                           th:href="@{/offers(filterType='engineType', filterAttr=${offer.getEngineType()})}">Vehicle engine type</a>
+                        <!-- Engine Cylinders Category filter -->
+                        <a class="badge bg-secondary text-decoration-none link-light" th:href="@{/offers(filterType='engineCylinders', filterAttr=${offer.getEngineCylinders()})}">
                             <span th:text="${offer.getEngineCylinders()}"></span>
                             <span> cylinders</span>
                         </a>
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">
+                        <!-- Engine Power Category filter -->
+                        <a class="badge bg-secondary text-decoration-none link-light" th:href="@{/offers(filterType='enginePower', filterAttr=${offer.getEnginePower()})}">
                             <span th:text="${offer.getEnginePower()}"></span>
                             <span> HP</span>
                         </a>
-                        <a th:text="${offer.getStyle()}" class="badge bg-secondary text-decoration-none link-light"
-                           href="#!">Vehicle style</a>
+                        <!-- Style Category filter -->
+                        <a th:text="${offer.getStyle()}"
+                           class="badge bg-secondary text-decoration-none link-light"
+                           th:href="@{/offers(filterType='style', filterAttr=${offer.getStyle()})}">Vehicle style</a>
                     </div>
                 </div>
                 <hr>

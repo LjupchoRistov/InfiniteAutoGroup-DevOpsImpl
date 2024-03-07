@@ -24,4 +24,6 @@ public interface OfferService {
     List<OfferDto> findAllWithSameMake(OfferDto offerDto);
 
     List<OfferDto> findAllWithSameStyle(OfferDto offerDto);
+
+    List<OfferDto> filterOffersCategories(String filterType, String filterAttr);
 }

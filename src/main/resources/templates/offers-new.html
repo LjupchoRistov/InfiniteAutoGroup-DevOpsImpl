@@ -410,28 +410,28 @@
                 </div>
             </div>
             <!-- Pictures -->
-            <div class="form-group row mb-3">
-                <label for="images" class="col-sm-4 col-form-label input-title">Images (The first image is the
-                    cover)</label>
-                <div class="col-sm-8">
-                    <label for="images" class="custom-file-upload btn btn-dark">Choose Images</label>
-                    <input type="file" id="images" name="pictures" th:value="${this}" multiple
-                           onchange="previewImages(event)" hidden="hidden" required>
-                </div>
-            </div>
+<!--            <div class="form-group row mb-3">-->
+<!--                <label for="images" class="col-sm-4 col-form-label input-title">Images (The first image is the-->
+<!--                    cover)</label>-->
+<!--                <div class="col-sm-8">-->
+<!--                    <label for="images" class="custom-file-upload btn btn-dark">Choose Images</label>-->
+<!--                    <input type="file" id="images" name="pictures" th:value="${this}" multiple-->
+<!--                           onchange="previewImages(event)" hidden="hidden" required>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <!-- Display error message if pictures are not inputted -->
-            <div class="form-group row mb-3 text-danger" th:if="${#fields.hasErrors('pictures')}">
-                <div class="col-sm-8 offset-sm-4">
-                    Please choose at least one image.
-                </div>
-            </div>
+<!--            <div class="form-group row mb-3 text-danger" th:if="${#fields.hasErrors('pictures')}">-->
+<!--                <div class="col-sm-8 offset-sm-4">-->
+<!--                    Please choose at least one image.-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="form-group row mb-3">
-                <div class="col-sm-12">
-                    <div id="image-preview"></div> <!-- This div will hold the preview images -->
-                </div>
-            </div>
+<!--            <div class="form-group row mb-3">-->
+<!--                <div class="col-sm-12">-->
+<!--                    <div id="image-preview"></div> &lt;!&ndash; This div will hold the preview images &ndash;&gt;-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div class="form-group row mb-3 justify-content-center">
                 <div class="col-sm-12 d-flex justify-content-center">
@@ -496,53 +496,53 @@
     });
 </script>
 <!--Display the images as they are being uploaded-->
-<script>
-    function previewImages(event) {
-        var preview = document.getElementById('image-preview');
-        preview.innerHTML = ''; // Clear previous previews
+<!--<script>-->
+<!--    function previewImages(event) {-->
+<!--        var preview = document.getElementById('image-preview');-->
+<!--        preview.innerHTML = ''; // Clear previous previews-->
 
-        var files = event.target.files; // Get the selected files
+<!--        var files = event.target.files; // Get the selected files-->
 
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var reader = new FileReader();
+<!--        for (var i = 0; i < files.length; i++) {-->
+<!--            var file = files[i];-->
+<!--            var reader = new FileReader();-->
 
-            reader.onload = function (e) {
-                var img = document.createElement('img'); // Create an <img> element
-                img.src = e.target.result; // Set the source of the image to the data URL
-                img.style.maxHeight = '200px'; // Set max width for display
-                img.style.maxWidth = '400px'; // Set max height for display
-                img.style.margin = '3px';
-                img.style.backgroundSize = 'cover';
-                img.style.backgroundPosition = 'center';
-                preview.appendChild(img); // Append the image to the preview div
-            };
+<!--            reader.onload = function (e) {-->
+<!--                var img = document.createElement('img'); // Create an <img> element-->
+<!--                img.src = e.target.result; // Set the source of the image to the data URL-->
+<!--                img.style.maxHeight = '200px'; // Set max width for display-->
+<!--                img.style.maxWidth = '400px'; // Set max height for display-->
+<!--                img.style.margin = '3px';-->
+<!--                img.style.backgroundSize = 'cover';-->
+<!--                img.style.backgroundPosition = 'center';-->
+<!--                preview.appendChild(img); // Append the image to the preview div-->
+<!--            };-->
 
-            reader.readAsDataURL(file); // Read the file as a data URL
-        }
-    }
-</script>
-<script>
-    function uploadImages(event) {
-        var files = event.target.files;
-        var formData = new FormData();
+<!--            reader.readAsDataURL(file); // Read the file as a data URL-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+<!--<script>-->
+<!--    function uploadImages(event) {-->
+<!--        var files = event.target.files;-->
+<!--        var formData = new FormData();-->
 
-        for (var i = 0; i < files.length; i++) {
-            formData.append('images[]', files[i]);
-        }
+<!--        for (var i = 0; i < files.length; i++) {-->
+<!--            formData.append('images[]', files[i]);-->
+<!--        }-->
 
-        // Send images to server using AJAX
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/upload-images', true);
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                var uploadedImageUrls = JSON.parse(xhr.responseText);
-                // Handle the uploaded image URLs (e.g., display them, store them in database)
-                console.log(uploadedImageUrls);
-            }
-        };
-        xhr.send(formData);
-    }
-</script>
+<!--        // Send images to server using AJAX-->
+<!--        var xhr = new XMLHttpRequest();-->
+<!--        xhr.open('POST', '/upload-images', true);-->
+<!--        xhr.onload = function () {-->
+<!--            if (xhr.status === 200) {-->
+<!--                var uploadedImageUrls = JSON.parse(xhr.responseText);-->
+<!--                // Handle the uploaded image URLs (e.g., display them, store them in database)-->
+<!--                console.log(uploadedImageUrls);-->
+<!--            }-->
+<!--        };-->
+<!--        xhr.send(formData);-->
+<!--    }-->
+<!--</script>-->
 </body>
 </html>
