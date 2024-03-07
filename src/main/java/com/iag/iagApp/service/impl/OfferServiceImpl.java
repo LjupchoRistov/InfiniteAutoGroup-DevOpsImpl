@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //todo: implement mappers
 import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModelDto;
@@ -99,6 +100,28 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
+    public List<OfferDto> filterOffersCategories(String filterType, String filterAttr) {
+        List<Offer> offerList = this.offerRepository.findAll();
+        if (filterType.equals("fuel"))
+            offerList.removeIf(offer -> !offer.getFuel().name().equalsIgnoreCase(filterAttr));
+        else if (filterType.equals("engineLiters"))
+            offerList.removeIf(offer -> !offer.getEngineLiters().equalsIgnoreCase(filterAttr));
+        else if (filterType.equals("engineType"))
+            offerList.removeIf(offer -> !offer.getEngineType().name().equalsIgnoreCase(filterAttr));
+        else if (filterType.equals("engineCylinders"))
+            offerList.removeIf(offer -> !offer.getEngineCylinders().toString().equals(filterAttr));
+        else if (filterType.equals("enginePower"))
+            offerList.removeIf(offer -> !offer.getEnginePower().toString().equalsIgnoreCase(filterAttr));
+        else if (filterType.equals("style"))
+            offerList.removeIf(offer -> !offer.getStyle().name().equalsIgnoreCase(filterAttr));
+
+        if (offerList.isEmpty())
+            offerList = this.offerRepository.findAll();
+
+        return offerList.stream().map(OfferMapper::mapToOfferDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<OfferDto> findAllOffers() {
         List<Offer> offers = this.offerRepository.findAll();
         return offers.stream().map(OfferMapper::mapToOfferDto).toList();
@@ -109,8 +132,13 @@ public class OfferServiceImpl implements OfferService {
 //        String username = SecurityUtil.getSessionUser();
         UserEntity user = userRepository.findAll().getFirst();
         Offer offer = mapToOffer(offerDto, carModelService);
+        List<String> images = new ArrayList<>();
+        images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
+        images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
+        images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
+        offer.setPictures(images);
         offer.setCreatedBy(user);
-        offer.setCoverPicture(offerDto.getPictures().getFirst());
+        offer.setCoverPicture(images.getFirst());
 
         return this.offerRepository.save(offer);
     }

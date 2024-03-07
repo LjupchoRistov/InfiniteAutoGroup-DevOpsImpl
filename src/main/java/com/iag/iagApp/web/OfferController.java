@@ -13,12 +13,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class OfferController {
     private final CarModelService carModelService;
     private final OfferService offerService;
+    private static AtomicLong counter = new AtomicLong(1);
 
     public OfferController(CarModelService carModelService, OfferService offerService) {
         this.carModelService = carModelService;
@@ -26,11 +29,23 @@ public class OfferController {
     }
 
     @GetMapping({"/", "/offers"})
-    public String listOffers(Model model) {
-        model.addAttribute("offers", offerService.findAllOffers());
+    public String listOffers(Model model,
+                             @RequestParam(name = "filterType", required = false) String filterType,
+                             @RequestParam(name = "filterAttr", required = false) String filterAttr) {
 
+        List<OfferDto> offerDtoList;
+
+        if (filterType != null && filterAttr != null){
+            offerDtoList = this.offerService.filterOffersCategories(filterType, filterAttr);
+        } else {
+            offerDtoList = this.offerService.findAllOffers();
+        }
+
+        // Retrieve offers based on filter if necessary, here we're just retrieving all offers
+        model.addAttribute("offers", offerDtoList);
         return "offers-list";
     }
+
 
     @GetMapping("/offers/{id}/details")
     public String offerDetails(@PathVariable Long id,
@@ -61,7 +76,7 @@ public class OfferController {
 
     @GetMapping("/offers/new")
     public String addOffer(Model model) {
-        Offer offer = new Offer();
+        Offer offer = populateOffer();
 
         // Add offer template
         model.addAttribute("offer", offer);
@@ -96,23 +111,35 @@ public class OfferController {
     }
 
     @PostMapping("/offers/new")
-    public String saveOffer(@Valid @ModelAttribute("offer") OfferDto offerDto,
-                            BindingResult result,
-                            @RequestParam("pictures") MultipartFile[] pictures,
-                            Model model) {
-        if (result.hasErrors() || pictures == null || pictures.length == 0) {
-            if (pictures == null || pictures.length == 0) {
-                // Add a custom error message if pictures are not uploaded
-                result.rejectValue("pictures", "offer.pictures.required", "Please choose at least one image.");
-            }
-            // If there are validation errors or no pictures uploaded, return to the form with the error messages
-            return "offers-new";
-        }
-
+    public String saveOffer(@Valid @ModelAttribute("offer") OfferDto offerDto) {
         // Save the offer
         this.offerService.saveOffer(offerDto);
 
         return "redirect:/offers";
     }
 
+    private Offer populateOffer() {
+        Offer offer = new Offer();
+
+        offer.setTitle("test num:" + counter.get());
+        offer.setDescription("test desc num: " + counter.get());
+        offer.setPrice(counter.get());
+        offer.setCondition(Condition.USED);
+        offer.setDistancePassed((int) (10000 * counter.get()));
+        offer.setTrade(false);
+        offer.setStyle(Style.COUPE);
+        offer.setYear((int) (2000 + counter.get()));
+        offer.setFuel(Fuel.PETROL);
+        offer.setTransmission(Transmission.AUTOMATIC);
+        offer.setDriveTrain(DriveTrain.RWD);
+        offer.setEnginePower((int) (50 * counter.get()));
+        offer.setEngineLiters("3.0");
+        offer.setEngineCylinders((int) counter.get());
+        offer.setEngineType(EngineType.F6);
+        offer.setExteriorColor(Color.BLACK);
+        offer.setInteriorColor(Color.BLACK);
+        offer.setSeats(2);
+
+        return offer;
+    }
 }
