@@ -15,15 +15,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class DataInitializer {
-    private final CarModelRepository carModelRepository;
     private final OfferRepository offerRepository;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final MakeRepository makeRepository;
     private final ModelRepository modelRepository;
 
-    public DataInitializer(CarModelRepository carModelRepository, OfferRepository offerRepository, RoleRepository roleRepository, UserRepository userRepository, MakeRepository makeRepository, ModelRepository modelRepository) {
-        this.carModelRepository = carModelRepository;
+    public DataInitializer(OfferRepository offerRepository, RoleRepository roleRepository, UserRepository userRepository, MakeRepository makeRepository, ModelRepository modelRepository) {
         this.offerRepository = offerRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
@@ -46,22 +44,12 @@ public class DataInitializer {
 
         if (this.modelRepository.findAll().isEmpty()){
             AtomicLong counter = new AtomicLong(400);
-            MakeEntity make = this.makeRepository.findByMakeEquals("Porsche");
+            MakeEntity make = this.makeRepository.findByMakeNameEquals("Porsche");
             this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT3RS", make));
             this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT2RS", make));
             this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT3", make));
             this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911 GT2", make));
             this.modelRepository.save(new ModelEntity(counter.getAndIncrement(), "911", make));
-        }
-
-        if (this.makeRepository.findAll().isEmpty()){
-            CarModel carModel1 = new CarModel((long)999, "Porsche", "911 GT3 RS");
-            CarModel carModel2 = new CarModel((long)998, "Porsche", "911 GT2 RS");
-            CarModel carModel3 = new CarModel((long)997, "Porsche", "911");
-
-            this.carModelRepository.save(carModel1);
-            this.carModelRepository.save(carModel2);
-            this.carModelRepository.save(carModel3);
         }
 
         if (this.roleRepository.findAll().isEmpty()) {
@@ -82,7 +70,8 @@ public class DataInitializer {
 
         if (this.offerRepository.findAll().isEmpty()) {
             List<String> pictures = getPictures1();
-            CarModel carModel = this.carModelRepository.findByMakeEqualsAndModelEquals("Porsche", "911 GT3 RS");
+            MakeEntity make = this.makeRepository.findByMakeNameEquals("Porsche");
+            ModelEntity model = this.modelRepository.findByModelNameEqualsAndMakeEquals("911 GT3RS", make);
             Offer offer1 = new Offer(
                     (long) 999,
                     "2019 Porsche 911 GT3 RS",
@@ -108,7 +97,7 @@ public class DataInitializer {
                     LocalDateTime.now(),
                     pictures,
                     this.userRepository.findAll().getLast(),
-                    carModel
+                    model
             );
             offerRepository.save(offer1); // Save the offer to the database
 
@@ -139,7 +128,7 @@ public class DataInitializer {
                     LocalDateTime.now(),
                     pictures,
                     this.userRepository.findAll().getLast(),
-                    carModel
+                    model
             );
             offerRepository.save(offer2); // Save the offer to the database
         }

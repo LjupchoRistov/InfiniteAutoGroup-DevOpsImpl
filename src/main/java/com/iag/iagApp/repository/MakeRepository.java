@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MakeRepository extends JpaRepository<MakeEntity, Long> {
-    MakeEntity findByMakeEquals(String make);
+    MakeEntity findByMakeNameEquals(String make);
 }

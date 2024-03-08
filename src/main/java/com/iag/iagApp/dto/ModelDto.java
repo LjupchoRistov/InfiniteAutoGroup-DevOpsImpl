@@ -10,6 +10,6 @@ import lombok.Data;
 @Builder
 public class ModelDto {
     private Long id;
-    private String model;
+    private String modelName;
     private MakeDto make;
 }

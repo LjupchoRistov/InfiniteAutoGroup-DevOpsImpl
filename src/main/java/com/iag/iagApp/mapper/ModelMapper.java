@@ -9,7 +9,7 @@ public class ModelMapper {
     public static ModelEntity mapToModel(ModelDto modelDto){
         return ModelEntity.builder()
                 .id(modelDto.getId())
-                .model(modelDto.getModel())
+                .modelName(modelDto.getModelName())
                 .make(mapToMake(modelDto.getMake()))// need to map MakeDto to MakeEntity
                 .build();
     }
@@ -17,7 +17,7 @@ public class ModelMapper {
     public static ModelDto mapToModelDto(ModelEntity model){
         return ModelDto.builder()
                 .id(model.getId())
-                .model(model.getModel())
+                .modelName(model.getModelName())
                 .make(mapToMakeDto(model.getMake()))// need to map MakeEntity to MakeDto
                 .build();
     }
