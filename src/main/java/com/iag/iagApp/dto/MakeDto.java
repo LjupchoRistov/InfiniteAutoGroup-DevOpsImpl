@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class MakeDto {
     private Long id;
-    private String make;
+    private String makeName;
 }

@@ -1,14 +1,13 @@
 package com.iag.iagApp.mapper;
 
-import com.iag.iagApp.dto.CarModelDto;
 import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.model.Offer;
-import com.iag.iagApp.service.CarModelService;
+
+import static com.iag.iagApp.mapper.ModelMapper.*;
 
 public class OfferMapper {
 
-    public static Offer mapToOffer(OfferDto offerDto, CarModelService carModelService) {
-        CarModelDto carModelDto = carModelService.findByMakeModel(offerDto.getMake(), offerDto.getModel());
+    public static Offer mapToOffer(OfferDto offerDto) {
         return Offer.builder()
                 .id(offerDto.getId())
                 .title(offerDto.getTitle())
@@ -32,7 +31,7 @@ public class OfferMapper {
                 .seats(offerDto.getSeats())
                 .pictures(offerDto.getPictures())
                 .createdBy(offerDto.getCreatedBy())
-                .model(CarModelMapper.mapToCarModel(carModelDto))
+                .model(mapToModel(offerDto.getModel()))// from ModelDto to ModelEntity
                 .build();
     }
 
@@ -60,8 +59,7 @@ public class OfferMapper {
                 .seats(offer.getSeats())
                 .pictures(offer.getPictures())
                 .createdBy(offer.getCreatedBy())
-                .make(offer.getModel().getMake())
-                .model(offer.getModel().getModel())
+                .model(mapToModelDto(offer.getModel()))// from ModelEntity to ModelDto
                 .build();
     }
 }

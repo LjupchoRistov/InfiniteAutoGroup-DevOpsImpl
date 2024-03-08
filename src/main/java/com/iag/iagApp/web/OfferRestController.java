@@ -1,9 +1,8 @@
 package com.iag.iagApp.web;
 
 
-import com.iag.iagApp.dto.CarModelDto;
 import com.iag.iagApp.model.enums.EngineType;
-import com.iag.iagApp.service.CarModelService;
+import com.iag.iagApp.service.ModelService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,15 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class OfferRestController {
 
-    private final CarModelService carModelService;
+    private final ModelService modelService;
 
-    public OfferRestController(CarModelService carModelService) {
-        this.carModelService = carModelService;
+    public OfferRestController(ModelService modelService) {
+        this.modelService = modelService;
     }
 
     @GetMapping("/offers/getEngineTypes")
@@ -50,7 +48,7 @@ public class OfferRestController {
 
     @GetMapping("/offers/getModels")
     public List<String> getModels(@RequestParam("make") String make) {
-        return this.carModelService.findAllModelForMake(make).stream().map(CarModelDto::getModel).toList();
+        return this.modelService.findAllModelsByMake(make);
     }
 
 }

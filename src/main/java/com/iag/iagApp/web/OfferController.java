@@ -4,27 +4,21 @@ import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.model.Offer;
 import com.iag.iagApp.model.enums.*;
-import com.iag.iagApp.service.CarModelService;
 import com.iag.iagApp.service.OfferService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Controller
 public class OfferController {
-    private final CarModelService carModelService;
     private final OfferService offerService;
     private static AtomicLong counter = new AtomicLong(1);
 
-    public OfferController(CarModelService carModelService, OfferService offerService) {
-        this.carModelService = carModelService;
+    public OfferController(OfferService offerService) {
         this.offerService = offerService;
     }
 
@@ -102,8 +96,8 @@ public class OfferController {
         // Add all transmission types
         model.addAttribute("transmissionTypes", Transmission.values());
 
-        // Add all vehicle makes
-        model.addAttribute("makeList", this.carModelService.findAllDistinctMakes());
+        //todo: Add all vehicle makes
+//        model.addAttribute("makeList", this.carModelService.findAllDistinctMakes());
 
         //todo: engine power is entered as String, need to be converted into decimal, needs to be cheked for . REGEX(num, ., num)
 

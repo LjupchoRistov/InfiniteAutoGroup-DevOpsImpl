@@ -69,5 +69,5 @@ public class Offer {
     private UserEntity createdBy;
     @ManyToOne
     @JoinColumn(name = "car_make_model", nullable = false)
-    private CarModel model;
+    private ModelEntity model;
 }

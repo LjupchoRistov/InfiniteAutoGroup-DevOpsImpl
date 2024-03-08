@@ -1,17 +1,17 @@
 package com.iag.iagApp.service.impl;
 
-import com.iag.iagApp.dto.CarModelDto;
 import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.mapper.OfferMapper;
-import com.iag.iagApp.model.CarModel;
+import com.iag.iagApp.model.MakeEntity;
+import com.iag.iagApp.model.ModelEntity;
 import com.iag.iagApp.model.Offer;
 import com.iag.iagApp.model.UserEntity;
 import com.iag.iagApp.model.enums.Style;
-import com.iag.iagApp.repository.CarModelRepository;
+import com.iag.iagApp.repository.MakeRepository;
+import com.iag.iagApp.repository.ModelRepository;
 import com.iag.iagApp.repository.OfferRepository;
 import com.iag.iagApp.repository.UserRepository;
-import com.iag.iagApp.service.CarModelService;
 import com.iag.iagApp.service.OfferService;
 import org.springframework.stereotype.Service;
 
@@ -21,24 +21,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 //todo: implement mappers
-import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModelDto;
-import static com.iag.iagApp.mapper.OfferMapper.mapToOffer;
-import static com.iag.iagApp.mapper.OfferMapper.mapToOfferDto;
-import static com.iag.iagApp.mapper.CarModelMapper.mapToCarModel;
+import static com.iag.iagApp.mapper.OfferMapper.*;
+import static com.iag.iagApp.mapper.ModelMapper.*;
 
 @Service
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
     private final UserRepository userRepository;
-    private final CarModelRepository carModelRepository;
-    private final CarModelService carModelService;
+    private final MakeRepository makeRepository;
+    private final ModelRepository modelRepository;
 
-    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, CarModelRepository carModelRepository, CarModelService carModelService) {
+    public OfferServiceImpl(OfferRepository offerRepository, UserRepository userRepository, MakeRepository makeRepository, ModelRepository modelRepository) {
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
-        this.carModelRepository = carModelRepository;
-        this.carModelService = carModelService;
+        this.makeRepository = makeRepository;
+        this.modelRepository = modelRepository;
     }
 
     @Override
@@ -53,9 +51,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<OfferDto> findAllWithSameMakeAndModel(OfferDto offerDto) {
-        CarModel carModel = this.carModelRepository.findByMakeEqualsAndModelEquals(offerDto.getMake(), offerDto.getModel());
+        ModelEntity model = mapToModel(offerDto.getModel());
 
-        List<Offer> offerList = this.offerRepository.findAllByModelEquals(carModel);
+        List<Offer> offerList = this.offerRepository.findAllByModelEquals(model);
 
         //todo: shuffle the list
         Collections.shuffle(offerList);
@@ -67,22 +65,20 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<OfferDto> findAllWithSameMake(OfferDto offerDto) {
-        CarModelDto carModelDto = mapToCarModelDto(this.carModelRepository.findByMakeEqualsAndModelEquals(offerDto.getMake(), offerDto.getModel()));
-        String make = carModelDto.getMake();
+        ModelEntity model = mapToModel(offerDto.getModel());
+        MakeEntity make = model.getMake();
 
-        //todo: get all CarModel that contain make
-        List<CarModel> carModelList = this.carModelRepository.findAllByMakeEquals(make);
+        // Get all Offers that contain make
+        List<Offer> offers = this.offerRepository.findAll();
+        offers.removeIf(offer -> !offer.getModel().getMake().equals(make));
 
-        //todo: get all Offers that their CarModel is in the list
-        List<Offer> offerList = new ArrayList<>();
-        carModelList.forEach(carModel -> offerList.addAll(this.offerRepository.findAllByModelEquals(carModel)));
+        // Shuffle the list
+        Collections.shuffle(offers);
 
-        //todo: shuffle the list
-        Collections.shuffle(offerList);
-        //todo: remove the post from its own suggestions
-        offerList.removeIf(offer -> offer.getId().equals(offerDto.getId()));;
+        // Remove the post from its own suggestions
+        offers.removeIf(offer -> offer.getId().equals(offerDto.getId()));
 
-        return offerList.stream().map(OfferMapper::mapToOfferDto).limit(8).toList();
+        return offers.stream().map(OfferMapper::mapToOfferDto).limit(8).toList();
     }
 
     @Override
@@ -91,9 +87,9 @@ public class OfferServiceImpl implements OfferService {
 
         List<Offer> offerList = this.offerRepository.findAllByStyleEquals(style);
 
-        //todo: shuffle the list
+        // Shuffle the list
         Collections.shuffle(offerList);
-        //todo: remove the post from its own suggestions
+        // Remove the post from its own suggestions
         offerList.removeIf(offer -> offer.getId().equals(offerDto.getId()));
 
         return offerList.stream().map(OfferMapper::mapToOfferDto).limit(8).toList();
@@ -131,7 +127,7 @@ public class OfferServiceImpl implements OfferService {
     public Offer saveOffer(OfferDto offerDto) {
 //        String username = SecurityUtil.getSessionUser();
         UserEntity user = userRepository.findAll().getFirst();
-        Offer offer = mapToOffer(offerDto, carModelService);
+        Offer offer = mapToOffer(offerDto);
         List<String> images = new ArrayList<>();
         images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
         images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
@@ -145,7 +141,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void updateOffer(OfferDto offerDto) {
-        Offer offer = mapToOffer(offerDto, carModelService);
+        Offer offer = mapToOffer(offerDto);
         this.offerRepository.save(offer);
     }
 
