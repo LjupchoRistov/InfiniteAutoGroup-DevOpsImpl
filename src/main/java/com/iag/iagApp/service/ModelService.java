@@ -21,5 +21,5 @@ public interface ModelService {
 
     ModelDto findByTitle(String title);
 
-    List<String> findAllModelsByMake(String make);
+    List<ModelDto> findAllModelsByMake(String make);
 }

@@ -4,6 +4,8 @@ import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.model.Offer;
 import com.iag.iagApp.model.enums.*;
+import com.iag.iagApp.repository.MakeRepository;
+import com.iag.iagApp.repository.ModelRepository;
 import com.iag.iagApp.service.OfferService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -16,10 +18,14 @@ import java.util.concurrent.atomic.AtomicLong;
 @Controller
 public class OfferController {
     private final OfferService offerService;
+    private final ModelRepository modelRepository;
+    private final MakeRepository makeRepository;
     private static AtomicLong counter = new AtomicLong(1);
 
-    public OfferController(OfferService offerService) {
+    public OfferController(OfferService offerService, ModelRepository modelRepository, MakeRepository makeRepository) {
         this.offerService = offerService;
+        this.modelRepository = modelRepository;
+        this.makeRepository = makeRepository;
     }
 
     @GetMapping({"/", "/offers"})
@@ -96,8 +102,8 @@ public class OfferController {
         // Add all transmission types
         model.addAttribute("transmissionTypes", Transmission.values());
 
-        //todo: Add all vehicle makes
-//        model.addAttribute("makeList", this.carModelService.findAllDistinctMakes());
+        // Add all vehicle makes
+        model.addAttribute("makeList", this.makeRepository.findAll());
 
         //todo: engine power is entered as String, need to be converted into decimal, needs to be cheked for . REGEX(num, ., num)
 
@@ -108,6 +114,17 @@ public class OfferController {
     public String saveOffer(@Valid @ModelAttribute("offer") OfferDto offerDto) {
         // Save the offer
         this.offerService.saveOffer(offerDto);
+
+        return "redirect:/offers";
+    }
+
+    // todo: edit
+//    @GetMapping("/offers/{id}/edit")
+//    public String editOffer()
+
+    @PostMapping("/offers/{id}/delete")
+    public String deleteOffer(@PathVariable("id") Long id){
+        this.offerService.deleteOffer(id);
 
         return "redirect:/offers";
     }

@@ -1,6 +1,7 @@
 package com.iag.iagApp.web;
 
 
+import com.iag.iagApp.dto.ModelDto;
 import com.iag.iagApp.model.enums.EngineType;
 import com.iag.iagApp.service.ModelService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +48,7 @@ public class OfferRestController {
     }
 
     @GetMapping("/offers/getModels")
-    public List<String> getModels(@RequestParam("make") String make) {
+    public List<ModelDto> getModels(@RequestParam("make") String make) {
         return this.modelService.findAllModelsByMake(make);
     }
 

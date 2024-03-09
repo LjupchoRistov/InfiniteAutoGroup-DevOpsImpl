@@ -104,11 +104,11 @@
                             <tbody>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Make</th>
-                                <td th:text="${offer.getModel().getMake().getMakeName()}">Make</td>
+                                <td th:text="${offer.getMake()}">Make</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Model</th>
-                                <td th:text="${offer.getModel().getModelName()}">Model</td>
+                                <td th:text="${offer.getModel()}">Model</td>
                             </tr>
                             <tr>
                                 <th style="width: 50%; text-align: start;">Year</th>
@@ -215,9 +215,9 @@
     <div class="row justify-content-center">
         <h3 class="custom-font mb-2">
             All
-            <span th:text="${offer.getModel().getMake().getMakeName()}"></span>
+            <span th:text="${offer.getMake()}"></span>
 
-            <span th:text="${offer.getModel().getModelName()}"></span>
+            <span th:text="${offer.getModel()}"></span>
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
@@ -248,7 +248,7 @@
     <div class="row justify-content-center">
         <h3 class="custom-font mb-2">
             All from
-            <span th:text="${offer.getModel().getMake().getMakeName()}"></span>
+            <span th:text="${offer.getMake()}"></span>
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
