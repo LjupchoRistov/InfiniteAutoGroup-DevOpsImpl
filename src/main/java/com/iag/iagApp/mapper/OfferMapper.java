@@ -1,13 +1,20 @@
 package com.iag.iagApp.mapper;
 
 import com.iag.iagApp.dto.OfferDto;
+import com.iag.iagApp.model.MakeEntity;
+import com.iag.iagApp.model.ModelEntity;
 import com.iag.iagApp.model.Offer;
+import com.iag.iagApp.repository.MakeRepository;
+import com.iag.iagApp.repository.ModelRepository;
+import com.iag.iagApp.service.ModelService;
 
 import static com.iag.iagApp.mapper.ModelMapper.*;
 
 public class OfferMapper {
 
-    public static Offer mapToOffer(OfferDto offerDto) {
+    public static Offer mapToOffer(OfferDto offerDto, ModelRepository modelRepository, MakeRepository makeRepository) {
+        MakeEntity make = makeRepository.findByMakeNameEquals(offerDto.getMake());
+        ModelEntity model = modelRepository.findByModelNameEqualsAndMakeEquals(offerDto.getModel(), make);
         return Offer.builder()
                 .id(offerDto.getId())
                 .title(offerDto.getTitle())
@@ -31,7 +38,7 @@ public class OfferMapper {
                 .seats(offerDto.getSeats())
                 .pictures(offerDto.getPictures())
                 .createdBy(offerDto.getCreatedBy())
-                .model(mapToModel(offerDto.getModel()))// from ModelDto to ModelEntity
+                .model(model)// from String make, String model to Model
                 .build();
     }
 
@@ -59,7 +66,8 @@ public class OfferMapper {
                 .seats(offer.getSeats())
                 .pictures(offer.getPictures())
                 .createdBy(offer.getCreatedBy())
-                .model(mapToModelDto(offer.getModel()))// from ModelEntity to ModelDto
+                .make(offer.getModel().getMake().getMakeName())
+                .model(offer.getModel().getModelName())
                 .build();
     }
 }

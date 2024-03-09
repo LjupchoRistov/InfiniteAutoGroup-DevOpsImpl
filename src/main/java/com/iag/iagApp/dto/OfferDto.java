@@ -43,7 +43,8 @@ public class OfferDto {
     private LocalDateTime updatedOn;
 
     // Make and Model
-    private ModelDto model;
+    private String make;
+    private String model;
 
     // Relations
     private List<String> pictures;

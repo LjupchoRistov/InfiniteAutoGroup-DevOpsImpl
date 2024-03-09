@@ -1,6 +1,7 @@
 package com.iag.iagApp.service.impl;
 
 import com.iag.iagApp.dto.ModelDto;
+import com.iag.iagApp.mapper.ModelMapper;
 import com.iag.iagApp.model.ModelEntity;
 import com.iag.iagApp.repository.ModelRepository;
 import com.iag.iagApp.service.ModelService;
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.iag.iagApp.mapper.MakeMapper.*;
+import static com.iag.iagApp.mapper.ModelMapper.*;
 
 @Service
 public class ModelServiceImpl implements ModelService {
@@ -49,8 +53,8 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<String> findAllModelsByMake(String make) {
-        List<ModelEntity> models = this.modelRepository.findAll().stream().filter(model -> model.getMake().getMakeName().toString().equals(make)).collect(Collectors.toList());
-        return models.stream().map(ModelEntity::getModelName).collect(Collectors.toList());
+    public List<ModelDto> findAllModelsByMake(String make) {
+        List<ModelEntity> models = this.modelRepository.findAll().stream().filter(model -> model.getMake().getMakeName().equals(make)).toList();
+        return models.stream().map(ModelMapper::mapToModelDto).collect(Collectors.toList());
     }
 }

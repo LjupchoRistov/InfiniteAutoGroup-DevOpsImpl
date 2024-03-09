@@ -1,5 +1,6 @@
 package com.iag.iagApp.service.impl;
 
+import com.iag.iagApp.dto.ModelDto;
 import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.mapper.OfferMapper;
@@ -51,7 +52,8 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<OfferDto> findAllWithSameMakeAndModel(OfferDto offerDto) {
-        ModelEntity model = mapToModel(offerDto.getModel());
+        MakeEntity make = makeRepository.findByMakeNameEquals(offerDto.getMake());
+        ModelEntity model = modelRepository.findByModelNameEqualsAndMakeEquals(offerDto.getModel(), make);
 
         List<Offer> offerList = this.offerRepository.findAllByModelEquals(model);
 
@@ -65,8 +67,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<OfferDto> findAllWithSameMake(OfferDto offerDto) {
-        ModelEntity model = mapToModel(offerDto.getModel());
-        MakeEntity make = model.getMake();
+        MakeEntity make = makeRepository.findByMakeNameEquals(offerDto.getMake());
 
         // Get all Offers that contain make
         List<Offer> offers = this.offerRepository.findAll();
@@ -127,7 +128,7 @@ public class OfferServiceImpl implements OfferService {
     public Offer saveOffer(OfferDto offerDto) {
 //        String username = SecurityUtil.getSessionUser();
         UserEntity user = userRepository.findAll().getFirst();
-        Offer offer = mapToOffer(offerDto);
+        Offer offer = mapToOffer(offerDto, modelRepository, makeRepository);
         List<String> images = new ArrayList<>();
         images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
         images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
@@ -141,7 +142,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public void updateOffer(OfferDto offerDto) {
-        Offer offer = mapToOffer(offerDto);
+        Offer offer = mapToOffer(offerDto, modelRepository, makeRepository);
         this.offerRepository.save(offer);
     }
 
