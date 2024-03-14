@@ -49,20 +49,20 @@ public class OfferController {
 
     @GetMapping("/offers/{id}/details")
     public String offerDetails(@PathVariable Long id,
-                               Model model) throws InvalidOfferIdException {
-        //todo: add the offer
+                               Model model){
+        // add the offer
         OfferDto offerDto = this.offerService.findById(id);
         model.addAttribute("offer", offerDto);
 
-        //todo: find offers with same make & model
+        // find offers with same make & model
         List<OfferDto> sameMakeAndModelOffers = this.offerService.findAllWithSameMakeAndModel(offerDto);
         model.addAttribute("sameMakeAndModelOffers", sameMakeAndModelOffers);
 
-        //todo: find offers by the same make
+        // find offers by the same make
         List<OfferDto> sameMakeOffers = this.offerService.findAllWithSameMake(offerDto);
         model.addAttribute("sameMakeOffers", sameMakeOffers);
 
-        //todo: find offers with the same car style
+        // find offers with the same car style
         List<OfferDto> sameCarStyleOffers = this.offerService.findAllWithSameStyle(offerDto);
         model.addAttribute("sameCarStyleOffers", sameCarStyleOffers);
 
@@ -76,7 +76,7 @@ public class OfferController {
 
     @GetMapping("/offers/new")
     public String addOffer(Model model) {
-        Offer offer = populateOffer();
+        Offer offer = new Offer();
 
         // Add offer template
         model.addAttribute("offer", offer);
@@ -105,8 +105,6 @@ public class OfferController {
         // Add all vehicle makes
         model.addAttribute("makeList", this.makeRepository.findAll());
 
-        //todo: engine power is entered as String, need to be converted into decimal, needs to be cheked for . REGEX(num, ., num)
-
         return "offers-new";
     }
 
@@ -118,39 +116,52 @@ public class OfferController {
         return "redirect:/offers";
     }
 
-    // todo: edit
-//    @GetMapping("/offers/{id}/edit")
-//    public String editOffer()
+    @GetMapping("/offers/{id}/edit")
+    public String editOffer(@PathVariable Long id,
+                            Model model){
+        OfferDto offerDto = this.offerService.findById(id);
+        model.addAttribute("offer", offerDto);
 
-    @PostMapping("/offers/{id}/delete")
-    public String deleteOffer(@PathVariable("id") Long id){
-        this.offerService.deleteOffer(id);
+        // Add all colors
+        model.addAttribute("colors", Color.values());
+
+        // Add conditions
+        model.addAttribute("vehicleCondition", Condition.values());
+
+        // Add drive train types
+        model.addAttribute("driveTrain", DriveTrain.values());
+
+        // Add all engine types
+        model.addAttribute("engineTypes", EngineType.values());
+
+        // Add all fuel types
+        model.addAttribute("fuelTypes", Fuel.values());
+
+        // Add all body styles
+        model.addAttribute("styles", Style.values());
+
+        // Add all transmission types
+        model.addAttribute("transmissionTypes", Transmission.values());
+
+        // Add all vehicle makes
+        model.addAttribute("makeList", this.makeRepository.findAll());
+
+        return "offers-edit";
+    }
+
+    @PostMapping("/offers/{id}/edit")
+    public String updateOffer(@PathVariable Long id,
+                              @Valid @ModelAttribute("offer") OfferDto offerDto){
+        offerDto.setId(id);
+        this.offerService.updateOffer(offerDto);
 
         return "redirect:/offers";
     }
 
-    private Offer populateOffer() {
-        Offer offer = new Offer();
+    @GetMapping("/offers/{id}/delete")
+    public String deleteOffer(@PathVariable("id") Long id){
+        this.offerService.deleteOffer(id);
 
-        offer.setTitle("test num:" + counter.get());
-        offer.setDescription("test desc num: " + counter.get());
-        offer.setPrice(counter.get());
-        offer.setCondition(Condition.USED);
-        offer.setDistancePassed((int) (10000 * counter.get()));
-        offer.setTrade(false);
-        offer.setStyle(Style.COUPE);
-        offer.setYear((int) (2000 + counter.get()));
-        offer.setFuel(Fuel.PETROL);
-        offer.setTransmission(Transmission.AUTOMATIC);
-        offer.setDriveTrain(DriveTrain.RWD);
-        offer.setEnginePower((int) (50 * counter.get()));
-        offer.setEngineLiters("3.0");
-        offer.setEngineCylinders((int) counter.get());
-        offer.setEngineType(EngineType.F6);
-        offer.setExteriorColor(Color.BLACK);
-        offer.setInteriorColor(Color.BLACK);
-        offer.setSeats(2);
-
-        return offer;
+        return "redirect:/offers";
     }
 }

@@ -8,4 +8,7 @@ import lombok.Data;
 public class MakeDto {
     private Long id;
     private String makeName;
+    private String logoUrl;
+    private Integer modelCount;
+    private Integer offersCount;
 }

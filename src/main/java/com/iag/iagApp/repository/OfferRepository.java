@@ -13,4 +13,5 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
     Offer findByTitle(String title);
     List<Offer> findAllByModelEquals(ModelEntity model);
     List<Offer> findAllByStyleEquals(Style style);
+
 }

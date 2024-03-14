@@ -17,4 +17,5 @@ public class MakeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String makeName ;
+    private String logoUrl;
 }

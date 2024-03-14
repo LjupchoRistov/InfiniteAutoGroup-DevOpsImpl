@@ -82,7 +82,7 @@
 <!-- Create offer form-->
 <div class="container offer-div" style="width: 900px;">
     <div class="row justify-content-center">
-        <form th:method="post" th:action="@{/offers/new}" th:object="${offer}">
+        <form th:method="post" th:action="@{'/offers/{id}/edit' (id=${offer.getId()})}" th:object="${offer}">
             <!-- Title -->
             <div class="form-group row mb-3">
                 <label for="title" class="col-sm-4 col-form-label input-title">Title</label>
@@ -91,10 +91,16 @@
                            class="form-control"
                            id="title"
                            name="title"
-                           placeholder="Title"
                            th:field="*{title}"
                            required
                     >
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12" style="color: lightslategrey; font-size: 15px">
+                    <label>Selected: </label>
+                    <label th:text="${offer.getMake()}"></label>
+                    <label th:text="${offer.getModel()}"></label>
                 </div>
             </div>
             <!-- Vehicle Make-->
@@ -106,8 +112,11 @@
                     <select class="dropdown custom-medium-input" id="vehicleMake" name="make" required>
                         <option value="">Select</option>
                         <!-- Populate options for vehicle makes -->
-                        <option th:each="make : ${makeList}" th:text="${make.getMakeName()}"
-                                th:value="${make.getMakeName()}"></option>
+                        <option th:each="make : ${makeList}"
+                                th:text="${make.getMakeName()}"
+                                th:value="${make.getMakeName()}"
+                                th:selected="${offer.getMake().equals(make)}"
+                        ></option>
                     </select>
                 </div>
             </div>
@@ -133,7 +142,6 @@
                             style="max-height: 100px;"
                             id="description"
                             name="description"
-                            placeholder="Description"
                             th:field="*{description}"
                             required
                     ></textarea>
@@ -147,8 +155,8 @@
                            class="form-control custom-medium-input"
                            id="price"
                            name="price"
-                           placeholder="Price"
                            th:field="*{price}"
+                           required
                     >
                 </div>
             </div>
@@ -180,7 +188,6 @@
                            class="form-control custom-medium-input"
                            id="distancePassed"
                            name="distancePassed"
-                           placeholder="Enter in kilometers"
                            th:field="*{distancePassed}"
                            required
                     >
@@ -196,7 +203,7 @@
                                id="trade"
                                name="trade"
                                th:value="true"
-                               required
+                               th:checked="${offer.trade}"
                         >
                         <label class="form-check-label" for="trade">
                             <!-- Label Text -->
@@ -212,10 +219,10 @@
                 <div class="col-sm-8">
                     <select class="dropdown custom-medium-input" id="style" name="style" required>
                         <option value="">Select</option>
-                        <!-- Loop to generate options for years -->
                         <option th:each="style : ${styles}"
                                 th:value="${style}"
                                 th:text="${style}"
+                                th:selected="${offer.getStyle().name().equals(style.name())}"
                         >
                     </select>
                 </div>
@@ -229,9 +236,10 @@
                     <select class="dropdown custom-medium-input" id="year" name="year" required>
                         <option value="">Select</option>
                         <!-- Loop to generate options for years -->
-                        <option th:each="year : ${#numbers.sequence(1950,2022)}"
+                        <option th:each="year : ${#numbers.sequence(2024, 1950)}"
                                 th:value="${year}"
                                 th:text="${year}"
+                                th:selected="${offer.getYear().equals(year)}"
                         >
                     </select>
                 </div>
@@ -247,6 +255,7 @@
                         <option th:each="fuel : ${fuelTypes}"
                                 th:value="${fuel}"
                                 th:text="${fuel}"
+                                th:selected="${offer.getFuel().name().equals(fuel.name())}"
                         >
                     </select>
                 </div>
@@ -282,6 +291,7 @@
                         <option th:each="dt : ${driveTrain}"
                                 th:value="${dt}"
                                 th:text="${dt}"
+                                th:selected="${offer.getDriveTrain().name().equals(dt.name())}"
                         >
                     </select>
                 </div>
@@ -294,7 +304,6 @@
                            class="form-control custom-small-input"
                            id="enginePower"
                            name="enginePower"
-                           placeholder="Enter Engine Power"
                            th:field="*{enginePower}"
                            required
                     >
@@ -309,10 +318,18 @@
                            class="form-control custom-small-input"
                            id="engineLiters"
                            name="engineLiters"
-                           placeholder=""
                            th:field="*{engineLiters}"
                            required
                     >
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12" style="color: lightslategrey; font-size: 15px">
+                    <label>Selected: </label>
+                    <label th:text="${offer.getEngineType()}"></label>
+                    <label>engine with</label>
+                    <label th:text="${offer.getEngineCylinders()}"></label>
+                    <label>cylinders</label>
                 </div>
             </div>
             <!-- Engine Num. Cylinders -->
@@ -323,18 +340,18 @@
                 </div>
                 <div class="col-sm-8">
                     <select class="dropdown custom-medium-input" id="engineCylinders" name="engineCylinders" required>
-                        <option value="-1">Select number of cylinders
+                        <option value="-1" th:selected="${offer.getEngineCylinders() == 1}">Select number of cylinders
                         </option>
-                        <option value="2">2 cylinders</option>
-                        <option value="3">3 cylinders</option>
-                        <option value="4">4 cylinders</option>
-                        <option value="5">5 cylinders</option>
-                        <option value="6">6 cylinders</option>
-                        <option value="8">8 cylinders</option>
-                        <option value="10">10 cylinders</option>
-                        <option value="12">12 cylinders</option>
-                        <option value="16">16 cylinders</option>
-                        <option value="0">Other</option>
+                        <option value="2" th:selected="${offer.getEngineCylinders() == 2}">2 cylinders</option>
+                        <option value="3" th:selected="${offer.getEngineCylinders() == 3}">3 cylinders</option>
+                        <option value="4" th:selected="${offer.getEngineCylinders() == 4}">4 cylinders</option>
+                        <option value="5" th:selected="${offer.getEngineCylinders() == 5}">5 cylinders</option>
+                        <option value="6" th:selected="${offer.getEngineCylinders() == 6}">6 cylinders</option>
+                        <option value="8" th:selected="${offer.getEngineCylinders() == 8}">8 cylinders</option>
+                        <option value="10" th:selected="${offer.getEngineCylinders() == 10}">10 cylinders</option>
+                        <option value="12" th:selected="${offer.getEngineCylinders() == 12}">12 cylinders</option>
+                        <option value="16" th:selected="${offer.getEngineCylinders() == 16}">16 cylinders</option>
+                        <option value="0" th:selected="${offer.getEngineCylinders() == 0}">Other</option>
                         <!-- Add more options if needed -->
                     </select>
                 </div>
@@ -356,13 +373,14 @@
             <div class="form-group row mb-3">
                 <div class="col-sm-6 justify-content-end align-content-end">
                     <div class="col-sm-4 col-form-label input-title">Exterior color</div>
-                    <div class="col-sm-3" th:each="color : ${color}">
+                    <div class="col-sm-3" th:each="color : ${colors}">
                         <div class="d-inline-flex align-items-center">
                             <input class="form-check-input"
                                    type="radio"
                                    name="exteriorColor"
                                    th:id="'exteriorColor' + ${color}"
                                    th:value="${color}"
+                                   th:checked="${offer.getExteriorColor().name() == color.name()}"
                                    required
                             >
                             <div class="d-inline-flex align-items-center">
@@ -376,13 +394,14 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="col-sm-4 col-form-label input-title">Interior color</div>
-                    <div class="col-sm-3" th:each="color : ${color}">
+                    <div class="col-sm-3" th:each="color : ${colors}">
                         <div class="d-inline-flex align-items-center">
                             <input class="form-check-input"
                                    type="radio"
                                    name="interiorColor"
                                    th:id="'interiorColor' + ${color}"
                                    th:value="${color}"
+                                   th:checked="${offer.getInteriorColor().name() == color.name()}"
                                    required
                             >
                             <div class="d-inline-flex align-items-center">
@@ -404,7 +423,6 @@
                            class="form-control custom-small-input"
                            id="numSeats"
                            name="numSeats"
-                           placeholder=""
                            th:field="*{seats}"
                            required
                     >
@@ -441,7 +459,7 @@
                 success: function (listOfEngineTypes) {
                     inputEngineTypes.empty().append('<option value="">Select</option>');
                     $.each(listOfEngineTypes, function (index, value) {
-                        inputEngineTypes.append('<option value="' + value + '">' + value + '</option>');
+                        inputEngineTypes.append('<option value="' + value + '" th:selected="${offer.getEngineType.equals(' + value + ')}">' + value + '</option>');
                     });
                     inputEngineTypes.parent().show();
                 },
