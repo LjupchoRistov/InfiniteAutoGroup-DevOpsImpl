@@ -33,13 +33,8 @@ public class DataInitializer {
     public void initData() {
         if (this.makeRepository.findAll().isEmpty()){
             AtomicLong counter = new AtomicLong(400);
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Porsche"));
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "BMW"));
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Mercedes"));
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Audi"));
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Ferrari"));
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Aston Martin"));
-            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Range Rover"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "Porsche", "https://1000logos.net/wp-content/uploads/2018/02/Porsche-Logo.png"));
+            this.makeRepository.save(new MakeEntity(counter.getAndIncrement(), "BMW", "https://cloud.starkinsider.com/wp-content/uploads/2020/03/1997-BMW-logo.webp"));
         }
 
         if (this.modelRepository.findAll().isEmpty()){

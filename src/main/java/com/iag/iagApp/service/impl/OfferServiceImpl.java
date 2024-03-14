@@ -1,6 +1,5 @@
 package com.iag.iagApp.service.impl;
 
-import com.iag.iagApp.dto.ModelDto;
 import com.iag.iagApp.dto.OfferDto;
 import com.iag.iagApp.exceptions.InvalidOfferIdException;
 import com.iag.iagApp.mapper.OfferMapper;
@@ -16,6 +15,7 @@ import com.iag.iagApp.repository.UserRepository;
 import com.iag.iagApp.service.OfferService;
 import org.springframework.stereotype.Service;
 
+import javax.sound.midi.Soundbank;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 //todo: implement mappers
 import static com.iag.iagApp.mapper.OfferMapper.*;
-import static com.iag.iagApp.mapper.ModelMapper.*;
 
 @Service
 public class OfferServiceImpl implements OfferService {
@@ -41,8 +40,8 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDto findById(Long id) throws InvalidOfferIdException {
-        return mapToOfferDto(this.offerRepository.findById(id).orElseThrow(InvalidOfferIdException::new));
+    public OfferDto findById(Long id){
+        return mapToOfferDto(this.offerRepository.findById(id).get());
     }
 
     @Override
@@ -125,29 +124,41 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public Offer saveOffer(OfferDto offerDto) {
+    public void saveOffer(OfferDto offerDto) {
 //        String username = SecurityUtil.getSessionUser();
         UserEntity user = userRepository.findAll().getFirst();
+        offerDto.setPictures(getImages());
+        offerDto.setCoverPicture(getImages().getFirst());
         Offer offer = mapToOffer(offerDto, modelRepository, makeRepository);
-        List<String> images = new ArrayList<>();
-        images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
-        images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
-        images.add("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
-        offer.setPictures(images);
-        offer.setCreatedBy(user);
-        offer.setCoverPicture(images.getFirst());
 
-        return this.offerRepository.save(offer);
+        offer.setCreatedBy(user);
+        offer.setCoverPicture(offerDto.getCoverPicture());
+
+        this.offerRepository.save(offer);
     }
 
     @Override
     public void updateOffer(OfferDto offerDto) {
-        Offer offer = mapToOffer(offerDto, modelRepository, makeRepository);
-        this.offerRepository.save(offer);
+        Offer previous = this.offerRepository.findById(offerDto.getId()).get();
+        offerDto.setCoverPicture(previous.getCoverPicture());
+        offerDto.setPictures(previous.getPictures());
+        offerDto.setCreatedBy(previous.getCreatedBy());
+        offerDto.setCreatedOn(previous.getCreatedOn());
+
+        Offer newOffer = mapToOffer(offerDto, modelRepository, makeRepository);
+
+        this.offerRepository.save(newOffer);
     }
 
     @Override
     public void deleteOffer(Long id) {
         this.offerRepository.deleteById(id);
+    }
+
+    // todo: NEEDS TO BE REMOVED
+    private List<String> getImages(){
+        List<String> images = new ArrayList<>();
+        images.add("https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/2048px-No_image_available.svg.png");
+        return images;
     }
 }

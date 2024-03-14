@@ -64,21 +64,25 @@
                            class="badge bg-secondary text-decoration-none link-light"
                            th:href="@{/offers(filterType='fuel', filterAttr=${offer.getFuel()})}">Vehicle fuel type</a>
                         <!-- Engine Liters Category filter -->
-                        <a class="badge bg-secondary text-decoration-none link-light" th:href="@{/offers(filterType='engineLiters', filterAttr=${offer.getEngineLiters()})}">
+                        <a class="badge bg-secondary text-decoration-none link-light"
+                           th:href="@{/offers(filterType='engineLiters', filterAttr=${offer.getEngineLiters()})}">
                             <span th:text="${offer.getEngineLiters()}"></span>
                             <span> liters</span>
                         </a>
                         <!-- Engine Type Category filter -->
                         <a th:text="${offer.getEngineType()}"
                            class="badge bg-secondary text-decoration-none link-light"
-                           th:href="@{/offers(filterType='engineType', filterAttr=${offer.getEngineType()})}">Vehicle engine type</a>
+                           th:href="@{/offers(filterType='engineType', filterAttr=${offer.getEngineType()})}">Vehicle
+                            engine type</a>
                         <!-- Engine Cylinders Category filter -->
-                        <a class="badge bg-secondary text-decoration-none link-light" th:href="@{/offers(filterType='engineCylinders', filterAttr=${offer.getEngineCylinders()})}">
+                        <a class="badge bg-secondary text-decoration-none link-light"
+                           th:href="@{/offers(filterType='engineCylinders', filterAttr=${offer.getEngineCylinders()})}">
                             <span th:text="${offer.getEngineCylinders()}"></span>
                             <span> cylinders</span>
                         </a>
                         <!-- Engine Power Category filter -->
-                        <a class="badge bg-secondary text-decoration-none link-light" th:href="@{/offers(filterType='enginePower', filterAttr=${offer.getEnginePower()})}">
+                        <a class="badge bg-secondary text-decoration-none link-light"
+                           th:href="@{/offers(filterType='enginePower', filterAttr=${offer.getEnginePower()})}">
                             <span th:text="${offer.getEnginePower()}"></span>
                             <span> HP</span>
                         </a>
@@ -89,14 +93,20 @@
                     </div>
                 </div>
                 <hr>
+                <!-- Add buttons for edit delete-->
+                <div class="justify-content-between align-items-center" id="actions-dropdown">
+                    <a class="btn btn-dark" th:href="@{'/offers/{id}/edit' (id=${offer.getId()})}">Edit</a>
+                    <a class="btn btn-dark"  th:href="@{'/offers/{id}/delete' (id=${offer.getId()})}">Delete</a>
+                    <hr>
+                </div>
                 <!-- Description about the vehicle -->
                 <section class="mb-5">
                     <h5 class="text-start mb-3">Vehicle Description</h5>
                     <p th:text="${offer.getDescription()}"></p>
                 </section>
                 <!-- Information about the vehicle -->
-                <div class="bg-dark p-1 w-100" style="color: whitesmoke">
-                    <h5 class="text-start">Car Information</h5>
+                <div class="bg-dark w-100" style="padding: 15px; color: whitesmoke">
+                    <h5 style="padding: 0; margin: 0;" class="text-start">Car Information</h5>
                 </div>
                 <div class="bg-light p-3 mb-5 d-flex flex-column flex-lg-row justify-content-between">
                     <div style="flex: 1; margin-top: -5px">
@@ -221,7 +231,7 @@
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
-            <div th:each="offer : ${sameMakeAndModelOffers}" class="col mb-5">
+            <div th:each="offer : ${sameMakeAndModelOffers}" class="col mb-5" style="height: 390px; width: 350px">
                 <a class="text-decoration-none text-black" th:href="@{/offers/{id}/details(id=${offer.getId()})}">
                     <div class="card h-100">
                         <!-- Offer image-->
@@ -233,7 +243,8 @@
                         <div class="card-body p-2">
                             <span th:text="${offer.getTitle()}"></span>
                             <br>
-                            <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span th:text="${offer.getPrice()}"></span><span> €</span></span>
+                            <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span
+                                    th:text="${offer.getPrice()}"></span><span> €</span></span>
                             <br>
                             <span style="color: rgba(33,37,41,0.81);">
                                 <span th:text="${offer.getDistancePassed()}"></span>
@@ -252,7 +263,7 @@
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
-            <div th:each="offer : ${sameMakeOffers}" class="col mb-5">
+            <div th:each="offer : ${sameMakeOffers}" class="col mb-5" style="height: 390px; width: 350px">
                 <a class="text-decoration-none text-black" th:href="@{/offers/{id}/details(id=${offer.getId()})}">
                     <div class="card h-100">
                         <!-- Offer image-->
@@ -264,7 +275,8 @@
                         <div class="card-body p-2">
                             <span th:text="${offer.getTitle()}"></span>
                             <br>
-                            <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span th:text="${offer.getPrice()}"></span><span> €</span></span>
+                            <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span
+                                    th:text="${offer.getPrice()}"></span><span> €</span></span>
                             <br>
                             <span style="color: rgba(33,37,41,0.81);">
                                 <span th:text="${offer.getDistancePassed()}"></span>
@@ -275,15 +287,15 @@
             </div>
         </div>
     </div>
-    <!-- Same body style offers -->
+    <!-- Same car style offers -->
     <div class="row justify-content-center">
         <h3 class="custom-font mb-2">
             All
-            <span class="text-lowercase" th:text="${offer.getStyle()}"></span>s
+            <span class="text-lowercase" th:text="${offer.getStyle()}"></span>
             :
         </h3>
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-start">
-            <div th:each="offer : ${sameCarStyleOffers}" class="col mb-5">
+            <div th:each="offer : ${sameCarStyleOffers}" class="col mb-5" style="height: 390px; width: 350px">
                 <a class="text-decoration-none text-black" th:href="@{/offers/{id}/details(id=${offer.getId()})}">
                     <div class="card h-100">
                         <!-- Offer image-->
@@ -295,7 +307,8 @@
                         <div class="card-body p-2">
                             <span th:text="${offer.getTitle()}"></span>
                             <br>
-                            <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span th:text="${offer.getPrice()}"></span><span> €</span></span>
+                            <span style="font-size: 22px" class="custom-font mt-3 mb-3"><span
+                                    th:text="${offer.getPrice()}"></span><span> €</span></span>
                             <br>
                             <span style="color: rgba(33,37,41,0.81);">
                                 <span th:text="${offer.getDistancePassed()}"></span>

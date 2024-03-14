@@ -12,4 +12,5 @@ public class ModelDto {
     private Long id;
     private String modelName;
     private MakeDto make;
+    private Integer offersCount;
 }

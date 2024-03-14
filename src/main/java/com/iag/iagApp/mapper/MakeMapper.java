@@ -8,6 +8,7 @@ public class MakeMapper {
         return MakeEntity.builder()
                 .id(makeDto.getId())
                 .makeName(makeDto.getMakeName())
+                .logoUrl(makeDto.getLogoUrl())
                 .build();
     }
 
@@ -15,6 +16,7 @@ public class MakeMapper {
         return MakeDto.builder()
                 .id(make.getId())
                 .makeName(make.getMakeName())
+                .logoUrl(make.getLogoUrl())
                 .build();
     }
 }
