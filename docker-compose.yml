@@ -1,0 +1,24 @@
+version: '3'
+services:
+  backend:
+    image: backend-image
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/iag
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: bubsidupsi
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
+  database:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: iag
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bubsidupsi
